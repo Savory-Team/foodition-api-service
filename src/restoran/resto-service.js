@@ -5,7 +5,7 @@ const { Storage } = require('@google-cloud/storage')
 const ResponseError = require('../middleware/response-error.js')
 const User = require('../user/user-model.js')
 const Resto = require('./resto-model.js')
-
+const Product = require('../product/product-model.js')
 
 const keyFilename = path.join(__dirname, '../../credentials/storage-admin-key.json')
 const GCS = new Storage({ keyFilename })
@@ -20,13 +20,17 @@ class RestoService {
         const checkNomorHp = searchUser.dataValues.no_hp
         if (!checkNomorHp) throw new ResponseError(400, 'Biodatamu Belum Lengkap')
         const searchResto = await Resto.findOne({ where: { user_id: userID } })
-        if (searchResto) return {
-            restoID: searchResto.dataValues.resto_id ? searchResto.dataValues.resto_id : null,
-            userID: searchResto.dataValues.user_id ? searchResto.dataValues.user_id : null,
-            image: searchResto.dataValues.image ? searchResto.dataValues.image : null,
-            nama: searchResto.dataValues.nama ? searchResto.dataValues.nama : null,
-            noHp: searchResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
-            slogan: searchResto.dataValues.slogan ? searchResto.dataValues.slogan : null,
+        if (searchResto) {
+            const countProductsResto = await Product.count({ where: { resto_id: searchResto.dataValues.resto_id } })
+            return {
+                restoID: searchResto.dataValues.resto_id ? searchResto.dataValues.resto_id : null,
+                userID: searchResto.dataValues.user_id ? searchResto.dataValues.user_id : null,
+                image: searchResto.dataValues.image ? searchResto.dataValues.image : null,
+                nama: searchResto.dataValues.nama ? searchResto.dataValues.nama : null,
+                noHp: searchResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
+                slogan: searchResto.dataValues.slogan ? searchResto.dataValues.slogan : null,
+                totalProduct: countProductsResto
+            }
         }
         const defaultPhoto = 'https://storage.googleapis.com/savory/api-service/user/default-user-image.png'
         const newRestoran = {

@@ -8,6 +8,17 @@ const ProductValidation = require('./product-validation.js')
 const NotificationService = require('../notification/notification-service.js')
 
 class ProductController {
+    static getProducts = async(req, res, next) => {
+        try {
+            const userID = req.userID
+            console.log({ userID })
+            const result = await ProductService.getProducts(userID)
+            res.status(200).json({ error: false, message: 'GET Product Berhasil', data: result })
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static getMyProducts = async(req, res, next) => {
         try {
             const userID = req.userID

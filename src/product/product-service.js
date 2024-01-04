@@ -14,6 +14,36 @@ const GCS = new Storage({ keyFilename })
 const bucketName = process.env.BUCKET_NAME || 'BUCKET_NAME'
 
 class ProductService {
+    static getProducts = async(userID) => {
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        const searchProducts = await Product.findAll({ where: { active: true }, include: Resto })
+        if (searchProducts.length === 0) throw new ResponseError(404, 'Products Tidak Ada')
+        const newProducts = searchProducts.map(product => {
+            const lokasiRestoran = product.dataValues.restoran.dataValues.kecamatan && product.dataValues.restoran.dataValues.kota_kab ?
+                `${product.dataValues.restoran.dataValues.kecamatan}, ${product.dataValues.restoran.dataValues.kota_kab}` :
+                'Kota Tidak Ada'
+            const kagetoriProduct = product.dataValues.kategori
+            const resultKategori = kagetoriProduct.replace(/,\s+/g, ',');
+            const listKategori = resultKategori.split(',')
+            return {
+                productID: product.dataValues.product_id,
+                image: product.dataValues.image,
+                active: product.dataValues.active,
+                status: product.dataValues.status,
+                type: product.dataValues.type,
+                porsi: product.dataValues.porsi,
+                harga: product.dataValues.type ? 10000 : 0,
+                kategori: listKategori,
+                namaRestoran: product.dataValues.restoran.dataValues.nama,
+                lokasi: lokasiRestoran
+            }
+        })
+        return newProducts
+    }
+
     static getMyProducts = async(userID) => {
         const searchUser = await User.findOne({ where: { user_id: userID } })
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
@@ -25,8 +55,9 @@ class ProductService {
         const searchProducts = await Product.findAll({ where: { resto_id: restoranID } })
         if (searchProducts.length === 0) throw new ResponseError(404, 'Produk Tidak Ada')
         const myProducts = searchProducts.map(product => {
-            const kagetoriProduct = product.dataValues.kagetori
-            const listKategori = kagetoriProduct.split(',')
+            const kagetoriProduct = product.dataValues.kategori
+            const resultKategori = kagetoriProduct.replace(/,\s+/g, ',');
+            const listKategori = resultKategori.split(',')
             return {
                 productID: product.dataValues.product_id,
                 image: product.dataValues.image,
@@ -34,7 +65,8 @@ class ProductService {
                 status: product.dataValues.status,
                 type: product.dataValues.type,
                 porsi: product.dataValues.porsi,
-                kagetori: listKategori
+                kagetori: listKategori,
+                harga: product.dataValues.type ? 10000 : 0
             }
         })
         return myProducts

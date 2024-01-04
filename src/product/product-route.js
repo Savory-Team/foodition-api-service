@@ -6,6 +6,7 @@ const upload = require('../utils/multer.js')
 
 const ProductRouting = express.Router()
 
+ProductRouting.get('/products', Authentication, ProductController.getProducts, errorMiddleware)
 ProductRouting.get('/products/me', Authentication, ProductController.getMyProducts, errorMiddleware)
 ProductRouting.post('/product', Authentication, upload.single('image'), ProductController.postProduct, errorMiddleware)
 ProductRouting.put('/products/active/reset', ProductController.resetProductsActive, errorMiddleware)
