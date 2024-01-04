@@ -12,6 +12,10 @@ const Notification = database.define('notification', {
     user_id: {
         type: DataTypes.STRING(16),
         allowNull: false,
+        references: {
+            model: 'users',
+            key: 'user_id',
+        },
     },
     type: {
         type: DataTypes.STRING(1),

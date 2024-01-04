@@ -1,60 +1,42 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const { sequelize } = Sequelize
 const database = require('../application/database.js')
-const Notification = require('../notification/notification-model.js')
-const Restoran = require('../restoran/resto-model.js')
+const Product = require('../product/product-model.js')
 
-const User = database.define('user', {
-    user_id: {
-        type: DataTypes.STRING(16),
+const Restoran = database.define('restoran', {
+    resto_id: {
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         primaryKey: true
     },
-    email: {
-        type: DataTypes.STRING,
+    user_id: {
+        type: DataTypes.STRING(16),
         allowNull: false,
         unique: true,
     },
-    password: {
+    username: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     nama: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    active: {
-        type: DataTypes.BOOLEAN,
+    no_hp: {
+        type: DataTypes.STRING(16),
         allowNull: false,
-        defaultValue: false,
     },
     image: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    otp: {
-        type: DataTypes.STRING(6),
-        allowNull: true,
-    },
-    username: {
-        type: DataTypes.STRING(16),
-        allowNull: true,
-    },
-    bio: {
+    slogan: {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    no_hp: {
-        type: DataTypes.STRING(16),
-        allowNull: true,
-    },
-    jenis_kelamin: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-    },
-    tgl_lahir: {
-        type: DataTypes.DATE,
+    deskripsi: {
+        type: DataTypes.STRING,
         allowNull: true,
     },
     label_alamat: {
@@ -95,21 +77,14 @@ const User = database.define('user', {
         allowNull: false,
         defaultValue: Sequelize.NOW,
     }
-}, { sequelize, modelName: 'user' })
+}, { sequelize, modelName: 'restoran' })
 
-Notification.belongsTo(User, {
-    foreignKey: 'user_id',
+Product.belongsTo(Restoran, {
+    foreignKey: 'resto_id',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 })
 
-Restoran.belongsTo(User, {
-    foreignKey: 'user_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-})
+Restoran.hasMany(Product, { foreignKey: 'resto_id', })
 
-User.hasMany(Notification, { foreignKey: 'user_id', })
-User.hasOne(Restoran, { foreignKey: 'user_id', })
-
-module.exports = User
+module.exports = Restoran

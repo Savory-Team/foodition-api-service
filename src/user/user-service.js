@@ -1,8 +1,16 @@
+const path = require('path')
+const fs = require('fs').promises
+const bcrypt = require('bcrypt')
+const { v4: uuidv4 } = require('uuid')
+const { Storage } = require('@google-cloud/storage')
 const ResponseError = require('../middleware/response-error')
 const User = require('./user-model.js')
-const Alamat = require('./alamat-model.js')
-const { v4: uuidv4 } = require('uuid')
-const bcrypt = require('bcrypt')
+const NotificationService = require('../notification/notification-service.js')
+const operator = require('indonesia-number-provider-checker').operator
+
+const keyFilename = path.join(__dirname, '../../credentials/storage-admin-key.json')
+const GCS = new Storage({ keyFilename })
+const bucketName = process.env.BUCKET_NAME || 'BUCKET_NAME'
 
 class UserService {
     static getMyProfile = async(userID) => {
@@ -24,12 +32,12 @@ class UserService {
         const isActive = searchMyProfile.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         return {
-            image: searchMyProfile.dataValues.image,
-            nama: searchMyProfile.dataValues.nama,
+            image: searchMyProfile.dataValues.image ? searchMyProfile.dataValues.image : null,
+            nama: searchMyProfile.dataValues.nama ? searchMyProfile.dataValues.nama : null,
             username: searchMyProfile.dataValues.username ? searchMyProfile.dataValues.username : null,
             bio: searchMyProfile.dataValues.bio ? searchMyProfile.dataValues.bio : null,
-            userID: searchMyProfile.dataValues.user_id,
-            email: searchMyProfile.dataValues.email,
+            userID: searchMyProfile.dataValues.user_id ? searchMyProfile.dataValues.user_id : null,
+            email: searchMyProfile.dataValues.email ? searchMyProfile.dataValues.email : null,
             no_hp: searchMyProfile.dataValues.no_hp ? searchMyProfile.dataValues.no_hp : null,
             jenis_kelamin: searchMyProfile.dataValues.jenis_kelamin ? searchMyProfile.dataValues.jenis_kelamin : null,
             tgl_lahir: searchMyProfile.dataValues.tgl_lahir ? searchMyProfile.dataValues.tgl_lahir : null,
@@ -41,9 +49,15 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        const searchMyAlamat = await Alamat.findOne({ where: { user_resto_id: userID } })
-        if (!searchMyAlamat) throw new ResponseError(404, 'Alamat Tidak Ada')
-        return searchMyAlamat
+        return {
+            labelAlamat: searchUser.dataValues.labelAlamat ? searchUser.dataValues.labelAlamat : null,
+            negara: searchUser.dataValues.negara ? searchUser.dataValues.negara : null,
+            provinsi: searchUser.dataValues.provinsi ? searchUser.dataValues.provinsi : null,
+            kotaKab: searchUser.dataValues.kota_kab ? searchUser.dataValues.kota_kab : null,
+            kecamatan: searchUser.dataValues.kecamatan ? searchUser.dataValues.kecamatan : null,
+            kelurahan: searchUser.dataValues.kelurahan ? searchUser.dataValues.kelurahan : null,
+            alamatLengkap: searchUser.dataValues.alamat_lengkap ? searchUser.dataValues.alamat_lengkap : null,
+        }
     }
 
     static getMyNama = async(userID) => {
@@ -75,7 +89,7 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { no_hp: searchUser.dataValues.no_hp }
+        return { noHp: `0${searchUser.dataValues.no_hp}` }
     }
 
     static getMyJenisKelamin = async(userID) => {
@@ -83,7 +97,7 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { jenis_kelamin: searchUser.dataValues.jenis_kelamin }
+        return { jenisKelamin: searchUser.dataValues.jenis_kelamin }
     }
 
     static getMyTanggalLahir = async(userID) => {
@@ -91,37 +105,34 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { tgl_lahir: searchUser.dataValues.tgl_lahir }
+        return { tanggalLahir: searchUser.dataValues.tgl_lahir }
     }
 
-    static postAlamat = async(userID, request) => {
+    static updatePhoto = async(userID, filePath) => {
         const searchUser = await User.findOne({ where: { user_id: userID } })
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        const alamatID = uuidv4().toString()
-        const newAlamat = {
-            alamat_id: alamatID,
-            user_resto_id: userID,
-            label_alamat: request.labelAlamat,
-            negara: request.negara,
-            provinsi: request.provinsi,
-            kota_kab: request.kotaKab,
-            kecamatan: request.kecamatan,
-            kelurahan: request.kelurahan,
-            alamat_lengkap: request.alamatLengkap,
-        }
-        const createAlamat = await Alamat.create(newAlamat)
-        if (!createAlamat) throw new ResponseError(400, 'Tambah Alamat Gagal')
+        const fileName = path.basename(filePath)
+        const destFileName = `api-service/user/${fileName}`
+        await GCS.bucket(bucketName).upload(filePath, { destination: destFileName, })
+        const url = `https://storage.googleapis.com/${bucketName}/${destFileName}`
+        searchUser.image = url
+        const updatedUser = await searchUser.save()
+        if (!updatedUser) throw new ResponseError(400, 'Update Foto Profile Gagal')
+        fs.unlink(filePath)
         const dataNotification = {
             user_id: userID,
             type: '0',
-            title: 'Alamat berhasil ditambahkan',
-            message: 'Selamat anda telah menambahkan Alamat! Pengalaman lebih baik lagi akan anda rasakan.'
+            title: 'Berhasil mengubah foto profile anda',
+            message: 'Mengubah foto profile akun anda berhasil, sekarang fotomu makin kece lagi!',
         }
         const pushNotification = await NotificationService.postNotification(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
-        return true
+        return {
+            userID: updatedUser.dataValues.userID,
+            image: updatedUser.dataValues.image
+        }
     }
 
     static forgotPassword = async(userID, request) => {
@@ -138,6 +149,14 @@ class UserService {
         searchUser.password = hashPassword
         const updatePassword = await searchUser.save()
         if (!updatePassword) throw new ResponseError(400, 'Ubah Password Gagal')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Berhasil mengubah password anda!',
+            message: 'Password berhasil diubah. Gunakan password baru untuk login',
+        }
+        const pushNotification = await NotificationService.postNotification(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return true
     }
 
@@ -146,17 +165,15 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        const checkAlamat = await Alamat.findOne({ where: { user_resto_id: userID } })
-        if (!checkAlamat) throw new ResponseError(400, 'Alamat Tidak Ada')
-        checkAlamat.label_alamat = request.labelAlamat ? request.labelAlamat : checkAlamat.dataValues.label_alamat
-        checkAlamat.negara = request.negara ? request.negara : checkAlamat.dataValues.negara
-        checkAlamat.provinsi = request.provinsi ? request.provinsi : checkAlamat.dataValues.provinsi
-        checkAlamat.kota_kab = request.kotaKab ? request.kotaKab : checkAlamat.dataValues.kota_kab
-        checkAlamat.kecamatan = request.kecamatan ? request.kecamatan : checkAlamat.dataValues.kecamatan
-        checkAlamat.kelurahan = request.kelurahan ? request.kelurahan : checkAlamat.dataValues.kelurahan
-        checkAlamat.alamat_lengkap = request.alamatLengkap ? request.alamatLengkap : checkAlamat.dataValues.alamat_lengkap
-        checkAlamat.updatedAt = new Date()
-        const ubahAlamat = await checkAlamat.save()
+        searchUser.label_alamat = request.labelAlamat ? request.labelAlamat : searchUser.dataValues.label_alamat
+        searchUser.negara = request.negara ? request.negara : searchUser.dataValues.negara
+        searchUser.provinsi = request.provinsi ? request.provinsi : searchUser.dataValues.provinsi
+        searchUser.kota_kab = request.kotaKab ? request.kotaKab : searchUser.dataValues.kota_kab
+        searchUser.kecamatan = request.kecamatan ? request.kecamatan : searchUser.dataValues.kecamatan
+        searchUser.kelurahan = request.kelurahan ? request.kelurahan : searchUser.dataValues.kelurahan
+        searchUser.alamat_lengkap = request.alamatLengkap ? request.alamatLengkap : searchUser.dataValues.alamat_lengkap
+        searchUser.updatedAt = new Date()
+        const ubahAlamat = await searchUser.save()
         if (!ubahAlamat) throw new ResponseError(400, 'Ubah Alamat Gagal')
         const dataNotification = {
             user_id: userID,
@@ -168,10 +185,6 @@ class UserService {
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return true
     }
-
-
-
-
 
     static putMyNama = async(userID, request) => {
         try {
@@ -251,6 +264,13 @@ class UserService {
             if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
             const isActive = searchUser.dataValues.active
             if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+            const providerValid = operator(request)
+            if (providerValid === 'Unknown') throw new ResponseError(400, 'Nomor Telepone Tidak Valid')
+            if (request[0] === '0') {
+                request = request.replace(/^0+/, '')
+            } else if (request[0] === '6') {
+                request = request.replace(/^62+/, '')
+            }
             searchUser.no_hp = request ? request : searchUser.dataValues.no_hp
             searchUser.updatedAt = new Date()
             const ubahNomorHp = await searchUser.save()
@@ -316,8 +336,6 @@ class UserService {
             next(error)
         }
     }
-
-
 }
 
 module.exports = UserService

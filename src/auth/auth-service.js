@@ -9,7 +9,6 @@ const sendEmail = require('../utils/email-service.js')
 const HTMLTemplateEmail = require('../application/html.js')
 const NotificationService = require('../notification/notification-service.js')
 
-
 class AuthService {
     static register = async(request) => {
         const matchPassword = request.password === request.confirmPassword
@@ -28,8 +27,9 @@ class AuthService {
         const text = `Kode verifikasi akun Foodition anda adalah:`
         const html = HTMLTemplateEmail.RegisterHTML(OTP)
         const sendEmailService = await sendEmail(request.email, subject, text, html)
+        const BUCKET_NAME = process.env.BUCKET_NAME || 'BUCKET_NAME'
         if (!sendEmailService) throw new ResponseError(400, 'OTP Gagal Dikirim')
-        const defaultPhoto = 'https://storage.googleapis.com/savory/api-service/user/default-user-image.png'
+        const defaultPhoto = `https://storage.googleapis.com/${BUCKET_NAME}/api-service/user/default-user-image.png`
         const userRegister = await User.create({
             user_id: userID,
             email: request.email,

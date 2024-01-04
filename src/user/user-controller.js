@@ -1,5 +1,6 @@
-const UserService = require('./user-service.js')
+const path = require('path')
 const validate = require('../middleware/validation.js')
+const UserService = require('./user-service.js')
 const UserValidation = require('./user-validation.js')
 
 class UserController {
@@ -105,6 +106,20 @@ class UserController {
         }
     }
 
+    static updatePhoto = async(req, res, next) => {
+        try {
+            const userID = req.userID
+            const file = req.file
+            if (!file) throw new ResponseError(400, 'Tidak ada foto yang diunggah')
+            const filename = file.filename
+            const filePath = path.join(__dirname, '../../uploads', filename)
+            const result = await UserService.updatePhoto(userID, filePath)
+            return res.status(200).json({ error: false, message: 'Ubah Foto Profile Berhasil', data: result })
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static forgotPassword = async(req, res, next) => {
         try {
             const userID = req.userID
@@ -168,7 +183,7 @@ class UserController {
     static putMyNohp = async(req, res, next) => {
         try {
             const userID = req.userID
-            const request = req.body
+            const request = req.body.noHp
             const validRequest = validate(UserValidation.NomorHandphoneValidation, request)
             const result = await UserService.putMyNohp(userID, validRequest)
             return res.status(200).json({ error: false, message: 'Ubah Nomor Handphone Saya Berhasil', data: result })

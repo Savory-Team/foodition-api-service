@@ -5,16 +5,19 @@ const bodyParser = require('body-parser')
 const modelSync = require('../utils/model-sync.js')
 
 const AuthRouter = require('../auth/auth-route.js')
-const NotificationRouter = require('../notification/notification-route.js')
+
 const UserRouter = require('../user/user-route.js')
+const RestoRouter = require('../restoran/resto-route.js')
+const NotificationRouter = require('../notification/notification-route.js')
+const ProductRouter = require('../product/product-route.js')
 
 const UserModel = require('../user/user-model.js')
+const RestoranModel = require('../restoran/resto-model.js')
 const NotifikasiModel = require('../notification/notification-model.js')
-const AlamatModel = require('../user/alamat-model.js')
-
+const ProductModel = require('../product/product-model.js')
 
 const app = express()
-modelSync(false, [UserModel, NotifikasiModel, AlamatModel])
+modelSync(false, [UserModel, RestoranModel, NotifikasiModel, ProductModel])
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
 
 app.use(cors({
@@ -45,8 +48,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Routing
 app.use('/auth', AuthRouter)
-app.use(NotificationRouter)
 app.use(UserRouter)
+app.use(RestoRouter)
+app.use(NotificationRouter)
+app.use(ProductRouter)
 
 app.get('/', (req, res) => {
     return res.status(200).json({

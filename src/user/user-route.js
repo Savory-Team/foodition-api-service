@@ -2,6 +2,8 @@ const express = require('express')
 const UserController = require('./user-controller.js')
 const errorMiddleware = require('../middleware/error-middleware.js')
 const Authentication = require('../middleware/authentication.js')
+const upload = require('../utils/multer.js')
+
 const UserRouting = express.Router()
 
 UserRouting.get('/user/me', Authentication, UserController.getMyProfile, errorMiddleware)
@@ -16,6 +18,8 @@ UserRouting.get('/user/me/jenisKelamin', Authentication, UserController.getMyJen
 UserRouting.get('/user/me/tanggalLahir', Authentication, UserController.getMyTanggalLahir, errorMiddleware)
 
 UserRouting.post('/user/me/alamat', Authentication, UserController.postAlamat, errorMiddleware)
+
+UserRouting.put('/user/me/photo', Authentication, upload.single('image'), UserController.updatePhoto, errorMiddleware)
 
 UserRouting.put('/user/me/forgot/password', Authentication, UserController.forgotPassword, errorMiddleware)
 UserRouting.put('/user/me/alamat', Authentication, UserController.putMyAlamat, errorMiddleware)

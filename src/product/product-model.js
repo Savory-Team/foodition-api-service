@@ -2,44 +2,38 @@ const { Sequelize, DataTypes } = require('sequelize')
 const { sequelize } = Sequelize
 const database = require('../application/database.js')
 
-const Alamat = database.define('alamat', {
-    alamat_id: {
+const Product = database.define('product', {
+    product_id: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         primaryKey: true
     },
-    user_resto_id: {
-        type: DataTypes.STRING(16),
-        allowNull: false,
-        unique: true,
-    },
-    label_alamat: {
-        type: DataTypes.STRING(32),
-        allowNull: false,
-    },
-    negara: {
+    resto_id: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    provinsi: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: false,
-    },
-    kota_kab: {
+    image: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    kecamatan: {
-        type: DataTypes.STRING,
+    active: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
     },
-    kelurahan: {
-        type: DataTypes.STRING,
+    status: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
     },
-    alamat_lengkap: {
+    type: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+    },
+    porsi: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    kategori: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -53,6 +47,6 @@ const Alamat = database.define('alamat', {
         allowNull: false,
         defaultValue: Sequelize.NOW,
     }
-}, { sequelize, modelName: 'alamat' })
+}, { sequelize, modelName: 'product' })
 
-module.exports = Alamat
+module.exports = Product
