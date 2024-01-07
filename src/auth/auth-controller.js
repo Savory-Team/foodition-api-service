@@ -60,7 +60,7 @@ class AuthController {
     static forgotPassword = async(req, res, next) => {
         try {
             const request = req.body
-            const validRequest = validate(AuthValidation.EmailValidation, request)
+            const validRequest = validate(AuthValidation.ForgotPasswordValidation, request)
             const result = await AuthService.forgotPassword(validRequest)
             res.status(200).json({ error: false, message: 'Password Berhasil Diubah', data: result })
         } catch (error) {
