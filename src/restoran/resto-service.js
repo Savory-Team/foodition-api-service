@@ -74,6 +74,7 @@ class RestoService {
             image: searchResto.dataValues.image ? searchResto.dataValues.image : null,
             nama: searchResto.dataValues.nama ? searchResto.dataValues.nama : null,
             username: searchResto.dataValues.username ? searchResto.dataValues.username : null,
+            noHp: searchResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
             slogan: searchResto.dataValues.slogan ? searchResto.dataValues.slogan : null,
             deskripsi: searchResto.dataValues.deskripsi ? searchResto.dataValues.deskripsi : null,
         }
