@@ -193,156 +193,132 @@ class UserService {
     }
 
     static putMyNama = async(userID, request) => {
-        try {
-            const searchUser = await User.findOne({ where: { user_id: userID } })
-            if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
-            const isActive = searchUser.dataValues.active
-            if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-            searchUser.nama = request ? request : searchUser.dataValues.nama
-            searchUser.updatedAt = new Date()
-            const ubahNama = await searchUser.save()
-            if (!ubahNama) throw new ResponseError(400, 'Ubah Nama Gagal')
-            const dataNotification = {
-                user_id: userID,
-                type: '0',
-                title: 'Berhasil telah mengubah Nama anda!',
-                message: 'Nama berhasil diubah.'
-            }
-            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
-            if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
-            return true
-        } catch (error) {
-            next(error)
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        searchUser.nama = request ? request : searchUser.dataValues.nama
+        searchUser.updatedAt = new Date()
+        const ubahNama = await searchUser.save()
+        if (!ubahNama) throw new ResponseError(400, 'Ubah Nama Gagal')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Berhasil telah mengubah Nama anda!',
+            message: 'Nama berhasil diubah.'
         }
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        return true
     }
 
     static putMyUsername = async(userID, request) => {
-        try {
-            const searchUser = await User.findOne({ where: { user_id: userID } })
-            if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
-            const isActive = searchUser.dataValues.active
-            if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-            searchUser.username = request ? request : searchUser.dataValues.username
-            searchUser.updatedAt = new Date()
-            const ubahUsername = await searchUser.save()
-            if (!ubahUsername) throw new ResponseError(400, 'Ubah Username Gagal')
-            const dataNotification = {
-                user_id: userID,
-                type: '0',
-                title: 'Berhasil telah mengubah Username anda!',
-                message: 'Username berhasil diubah.'
-            }
-            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
-            if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
-            return true
-        } catch (error) {
-            next(error)
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        searchUser.username = request ? request : searchUser.dataValues.username
+        searchUser.updatedAt = new Date()
+        const ubahUsername = await searchUser.save()
+        if (!ubahUsername) throw new ResponseError(400, 'Ubah Username Gagal')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Berhasil telah mengubah Username anda!',
+            message: 'Username berhasil diubah.'
         }
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        return true
     }
 
     static putMyBio = async(userID, request) => {
-        try {
-            const searchUser = await User.findOne({ where: { user_id: userID } })
-            if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
-            const isActive = searchUser.dataValues.active
-            if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-            searchUser.bio = request ? request : searchUser.dataValues.bio
-            searchUser.updatedAt = new Date()
-            const ubahBio = await searchUser.save()
-            if (!ubahBio) throw new ResponseError(400, 'Ubah Bio Gagal')
-            const dataNotification = {
-                user_id: userID,
-                type: '0',
-                title: 'Berhasil telah mengubah Bio anda!',
-                message: 'Bio berhasil diubah.'
-            }
-            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
-            if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
-            return true
-        } catch (error) {
-            next(error)
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        searchUser.bio = request ? request : searchUser.dataValues.bio
+        searchUser.updatedAt = new Date()
+        const ubahBio = await searchUser.save()
+        if (!ubahBio) throw new ResponseError(400, 'Ubah Bio Gagal')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Berhasil telah mengubah Bio anda!',
+            message: 'Bio berhasil diubah.'
         }
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        return true
     }
 
     static putMyNohp = async(userID, request) => {
-        try {
-            const searchUser = await User.findOne({ where: { user_id: userID } })
-            if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
-            const isActive = searchUser.dataValues.active
-            if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-            const providerValid = operator(request)
-            if (providerValid === 'Unknown') throw new ResponseError(400, 'Nomor Telepone Tidak Valid')
-            if (request[0] === '0') {
-                request = request.replace(/^0+/, '')
-            } else if (request[0] === '6') {
-                request = request.replace(/^62+/, '')
-            }
-            searchUser.no_hp = request ? request : searchUser.dataValues.no_hp
-            searchUser.updatedAt = new Date()
-            const ubahNomorHp = await searchUser.save()
-            if (!ubahNomorHp) throw new ResponseError(400, 'Ubah Nomor Handphone Gagal')
-            const dataNotification = {
-                user_id: userID,
-                type: '0',
-                title: 'Berhasil telah mengubah Nomor Handphone anda!',
-                message: 'Nomor Handphone berhasil diubah.'
-            }
-            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
-            if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
-            return true
-        } catch (error) {
-            next(error)
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        const providerValid = operator(request)
+        if (providerValid === 'Unknown') throw new ResponseError(400, 'Nomor Telepone Tidak Valid')
+        if (request[0] === '0') {
+            request = request.replace(/^0+/, '')
+        } else if (request[0] === '6') {
+            request = request.replace(/^62+/, '')
         }
+        searchUser.no_hp = request ? request : searchUser.dataValues.no_hp
+        searchUser.updatedAt = new Date()
+        const ubahNomorHp = await searchUser.save()
+        if (!ubahNomorHp) throw new ResponseError(400, 'Ubah Nomor Handphone Gagal')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Berhasil telah mengubah Nomor Handphone anda!',
+            message: 'Nomor Handphone berhasil diubah.'
+        }
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        return true
     }
 
     static putMyJenisKelamin = async(userID, request) => {
-        try {
-            const searchUser = await User.findOne({ where: { user_id: userID } })
-            if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
-            const isActive = searchUser.dataValues.active
-            if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-            const jenisKelamin = searchUser.dataValues
-            if (jenisKelamin !== null) throw new ResponseError(400, 'Jenis Kelamin Tidak Dapat Diubah')
-            searchUser.jenis_kelamin = request ? request : jenisKelamin
-            searchUser.updatedAt = new Date()
-            const ubahJenisKelamin = await searchUser.save()
-            if (!ubahJenisKelamin) throw new ResponseError(400, 'Ubah Jenis Kelamin Gagal')
-            const dataNotification = {
-                user_id: userID,
-                type: '0',
-                title: 'Berhasil telah mengubah Jenis Kelamin anda!',
-                message: 'Jenis Kelamin berhasil diubah.'
-            }
-            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
-            if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
-            return true
-        } catch (error) {
-            next(error)
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        const jenisKelamin = searchUser.dataValues
+        if (jenisKelamin !== null) throw new ResponseError(400, 'Jenis Kelamin Tidak Dapat Diubah')
+        searchUser.jenis_kelamin = request ? request : jenisKelamin
+        searchUser.updatedAt = new Date()
+        const ubahJenisKelamin = await searchUser.save()
+        if (!ubahJenisKelamin) throw new ResponseError(400, 'Ubah Jenis Kelamin Gagal')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Berhasil telah mengubah Jenis Kelamin anda!',
+            message: 'Jenis Kelamin berhasil diubah.'
         }
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        return true
     }
 
     static putMyTanggalLahir = async(userID, request) => {
-        try {
-            const searchUser = await User.findOne({ where: { user_id: userID } })
-            if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
-            const isActive = searchUser.dataValues.active
-            if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-            searchUser.tgl_lahir = request ? request : searchUser.dataValues.tgl_lahir
-            searchUser.updatedAt = new Date()
-            const ubahTanggalLahir = await searchUser.save()
-            if (!ubahTanggalLahir) throw new ResponseError(400, 'Ubah Tanggal Lahir Gagal')
-            const dataNotification = {
-                user_id: userID,
-                type: '0',
-                title: 'Berhasil telah mengubah Tanggal Lahir anda!',
-                message: 'Tanggal Lahir berhasil diubah.'
-            }
-            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
-            if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
-            return true
-        } catch (error) {
-            next(error)
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        searchUser.tgl_lahir = request ? request : searchUser.dataValues.tgl_lahir
+        searchUser.updatedAt = new Date()
+        const ubahTanggalLahir = await searchUser.save()
+        if (!ubahTanggalLahir) throw new ResponseError(400, 'Ubah Tanggal Lahir Gagal')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Berhasil telah mengubah Tanggal Lahir anda!',
+            message: 'Tanggal Lahir berhasil diubah.'
         }
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        return true
     }
 }
 
