@@ -1,8 +1,6 @@
 const Joi = require('joi')
 
-const UserIDValidation = Joi.object({
-    userID: Joi.string().min(16).max(16).required(),
-})
+const UserIDValidation = Joi.string().min(16).max(16).required()
 
 const PostNotificationValidation = Joi.object({
     user_id: Joi.string().min(16).max(16).required(),
