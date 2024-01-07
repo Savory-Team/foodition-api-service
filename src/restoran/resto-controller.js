@@ -48,6 +48,18 @@ class RestoController {
         }
     }
 
+    static putResto = async(req, res, next) => {
+        try {
+            const userID = req.userID
+            const request = req.body
+            const validRequest = validate(RestoValidation.putRestoValidation, request)
+            const result = await RestoService.putResto(userID, validRequest)
+            return res.status(200).json({ error: false, message: 'Ubah Data Restoran Berhasil', data: result })
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static putAlamat = async(req, res, next) => {
         try {
             const userID = req.userID

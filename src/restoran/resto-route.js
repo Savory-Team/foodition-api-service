@@ -10,6 +10,7 @@ RestoRouting.get('/resto/me', Authentication, RestoController.getResto, errorMid
 RestoRouting.get('/resto/me/detail', Authentication, RestoController.getDetailResto, errorMiddleware)
 RestoRouting.get('/resto/me/alamat', Authentication, RestoController.getAlamatResto, errorMiddleware)
 RestoRouting.put('/resto/me/photo', Authentication, upload.single('image'), RestoController.updatePhoto, errorMiddleware)
+RestoRouting.put('/resto/me', Authentication, RestoController.putResto, errorMiddleware)
 RestoRouting.put('/resto/me/alamat', Authentication, RestoController.putAlamat, errorMiddleware)
 
 module.exports = RestoRouting

@@ -124,6 +124,30 @@ class RestoService {
         }
     }
 
+    static putResto = async(userID, request) => {
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        const searchResto = await Resto.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Restoran Tidak Ada')
+        searchResto.nama = request.nama ? request.nama : searchResto.dataValues.nama
+        searchResto.username = request.username ? request.username : searchResto.dataValues.username
+        searchResto.slogan = request.slogan ? request.slogan : searchResto.dataValues.slogan
+        searchResto.deskripsi = request.deskripsi ? request.deskripsi : searchResto.dataValues.deskripsi
+        const updateDataResto = await searchResto.save()
+        if (!updateDataResto) throw new ResponseError(400, 'Ubah Data Restoran Gagal')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Berhasil mengubah Data Restoran anda!',
+            message: 'Mengubah data restoran anda berhasil. Silahkan cek data restoran anda.',
+        }
+        const pushNotification = await NotificationService.postNotificationResto(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        return true
+    }
+
     static putAlamat = async(userID, request) => {
         const searchUser = await User.findOne({ where: { user_id: userID } })
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
