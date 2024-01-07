@@ -39,7 +39,7 @@ class UserService {
             userID: searchMyProfile.dataValues.user_id ? searchMyProfile.dataValues.user_id : null,
             email: searchMyProfile.dataValues.email ? searchMyProfile.dataValues.email : null,
             noHp: searchMyProfile.dataValues.no_hp ? searchMyProfile.dataValues.no_hp : null,
-            jenisKelamin: searchMyProfile.dataValues.jenis_kelamin ? searchMyProfile.dataValues.jenis_kelamin : null,
+            jenisKelamin: searchMyProfile.dataValues.jenis_kelamin ? searchMyProfile.dataValues.jenis_kelamin ? 'Laki-laki' : 'Perempuan' : null,
             tanggalLahir: searchMyProfile.dataValues.tgl_lahir ? searchMyProfile.dataValues.tgl_lahir : null,
         }
     }
@@ -65,7 +65,7 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { nama: searchUser.dataValues.nama }
+        return { nama: searchUser.dataValues.nama ? searchUser.dataValues.nama : nul }
     }
 
     static getMyUsername = async(userID) => {
@@ -73,7 +73,7 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { username: searchUser.dataValues.username }
+        return { username: searchUser.dataValues.username ? searchUser.dataValues.username : null }
     }
 
     static getMyBio = async(userID) => {
@@ -81,7 +81,7 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { bio: searchUser.dataValues.bio }
+        return { bio: searchUser.dataValues.bio ? searchUser.dataValues.bio : null }
     }
 
     static getMyNohp = async(userID) => {
@@ -89,7 +89,10 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { noHp: searchUser.dataValues.no_hp ? `0${searchUser.dataValues.no_hp}` : searchUser.dataValues.no_hp }
+        return {
+            noHp: searchUser.dataValues.no_hp ?
+                searchUser.dataValues.no_hp ? `0${searchUser.dataValues.no_hp}` : searchUser.dataValues.no_hp : null
+        }
     }
 
     static getMyJenisKelamin = async(userID) => {
@@ -97,7 +100,10 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { jenisKelamin: searchUser.dataValues.jenis_kelamin }
+        return {
+            jenisKelamin: searchUser.dataValues.jenis_kelamin ?
+                searchUser.dataValues.jenis_kelamin === true ? 'Laki-laki' : 'Perempuan' : null
+        }
     }
 
     static getMyTanggalLahir = async(userID) => {
@@ -105,7 +111,7 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { tanggalLahir: searchUser.dataValues.tgl_lahir }
+        return { tanggalLahir: searchUser.dataValues.tgl_lahir ? searchUser.dataValues.tgl_lahir : null }
     }
 
     static updatePhoto = async(userID, filePath) => {
@@ -130,8 +136,8 @@ class UserService {
         const pushNotification = await NotificationService.postNotificationUser(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return {
-            userID: updatedUser.dataValues.userID,
-            image: updatedUser.dataValues.image
+            userID: updatedUser.dataValues.userID ? updatedUser.dataValues.userID : null,
+            image: updatedUser.dataValues.image ? updatedUser.dataValues.image : null
         }
     }
 
@@ -295,7 +301,9 @@ class UserService {
             if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
             const isActive = searchUser.dataValues.active
             if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-            searchUser.jenis_kelamin = request ? request : searchUser.dataValues.jenis_kelamin
+            const jenisKelamin = searchUser.dataValues
+            if (jenisKelamin !== null) throw new ResponseError(400, 'Jenis Kelamin Tidak Dapat Diubah')
+            searchUser.jenis_kelamin = request ? request : jenisKelamin
             searchUser.updatedAt = new Date()
             const ubahJenisKelamin = await searchUser.save()
             if (!ubahJenisKelamin) throw new ResponseError(400, 'Ubah Jenis Kelamin Gagal')
