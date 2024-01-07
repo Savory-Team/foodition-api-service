@@ -125,7 +125,7 @@ class UserController {
             const userID = req.userID
             const request = req.body
             const validRequest = validate(UserValidation.ForgotPasswordValidation, request)
-            const result = await UserService.postAlamat(userID, validRequest)
+            const result = await UserService.forgotPassword(userID, validRequest)
             return res.status(200).json({ error: false, message: 'Ubah Password Berhasil', data: result })
         } catch (error) {
             next(error)
