@@ -6,6 +6,9 @@ const ResponseError = require('../middleware/response-error.js')
 const User = require('../user/user-model.js')
 const Resto = require('./resto-model.js')
 const Product = require('../product/product-model.js')
+const NotificationService = require('../notification/notification-service.js')
+
+
 
 const keyFilename = path.join(__dirname, '../../credentials/storage-admin-key.json')
 const GCS = new Storage({ keyFilename })
@@ -48,7 +51,7 @@ class RestoService {
             title: 'Restoran berhasil dibuat',
             message: 'Selamat, restoran anda berhasil dibuat. Sekarang anda bisa menjual makanan.',
         }
-        const pushNotification = await NotificationService.postNotification(dataNotification)
+        const pushNotification = await NotificationService.postNotificationResto(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return {
             restoID: createResto.dataValues.resto_id ? searchResto.dataValues.resto_id : null,
@@ -113,7 +116,7 @@ class RestoService {
             title: 'Berhasil mengubah foto profile restoran anda',
             message: 'Mengubah foto profile renstoran anda berhasil.',
         }
-        const pushNotification = await NotificationService.postNotification(dataNotification)
+        const pushNotification = await NotificationService.postNotificationResto(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return {
             userID: updatedUser.dataValues.userID,
@@ -143,7 +146,7 @@ class RestoService {
             title: 'Berhasil mengubah Alamat Restoran anda!',
             message: 'Mengubah alamat restoran anda berhasil. Silahkan cek alamat restoran anda.',
         }
-        const pushNotification = await NotificationService.postNotification(dataNotification)
+        const pushNotification = await NotificationService.postNotificationResto(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return true
     }

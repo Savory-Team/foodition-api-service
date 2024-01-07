@@ -8,6 +8,7 @@ const ProductRouting = express.Router()
 
 ProductRouting.get('/products', Authentication, ProductController.getProducts, errorMiddleware)
 ProductRouting.get('/products/me', Authentication, ProductController.getMyProducts, errorMiddleware)
+ProductRouting.get('/product/:id', Authentication, ProductController.getProduct, errorMiddleware)
 ProductRouting.post('/product', Authentication, upload.single('image'), ProductController.postProduct, errorMiddleware)
 ProductRouting.put('/products/active/reset', ProductController.resetProductsActive, errorMiddleware)
 

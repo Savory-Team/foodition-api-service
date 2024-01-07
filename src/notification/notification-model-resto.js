@@ -2,19 +2,19 @@ const { Sequelize, DataTypes } = require('sequelize')
 const { sequelize } = Sequelize
 const database = require('../application/database.js')
 
-const Notification = database.define('notification', {
+const NotificationResto = database.define('notification-restoran', {
     notification_id: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         primaryKey: true
     },
-    user_id: {
-        type: DataTypes.STRING(16),
+    resto_id: {
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
-            model: 'users',
-            key: 'user_id',
+            model: 'restorans',
+            key: 'resto_id',
         },
     },
     type: {
@@ -39,6 +39,6 @@ const Notification = database.define('notification', {
         allowNull: false,
         defaultValue: Sequelize.NOW,
     }
-}, { sequelize, modelName: 'notification' })
+}, { sequelize, modelName: 'notification-restoran' })
 
-module.exports = Notification
+module.exports = NotificationResto

@@ -127,7 +127,7 @@ class UserService {
             title: 'Berhasil mengubah foto profile anda',
             message: 'Mengubah foto profile akun anda berhasil, sekarang fotomu makin kece lagi!',
         }
-        const pushNotification = await NotificationService.postNotification(dataNotification)
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return {
             userID: updatedUser.dataValues.userID,
@@ -155,7 +155,7 @@ class UserService {
             title: 'Berhasil mengubah password anda!',
             message: 'Password berhasil diubah. Gunakan password baru untuk login',
         }
-        const pushNotification = await NotificationService.postNotification(dataNotification)
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return true
     }
@@ -181,7 +181,7 @@ class UserService {
             title: 'Berhasil telah mengubah Alamat anda!',
             message: 'Alamat berhasil diubah.'
         }
-        const pushNotification = await NotificationService.postNotification(dataNotification)
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return true
     }
@@ -202,7 +202,7 @@ class UserService {
                 title: 'Berhasil telah mengubah Nama anda!',
                 message: 'Nama berhasil diubah.'
             }
-            const pushNotification = await NotificationService.postNotification(dataNotification)
+            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
             if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
             return true
         } catch (error) {
@@ -226,7 +226,7 @@ class UserService {
                 title: 'Berhasil telah mengubah Username anda!',
                 message: 'Username berhasil diubah.'
             }
-            const pushNotification = await NotificationService.postNotification(dataNotification)
+            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
             if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
             return true
         } catch (error) {
@@ -250,7 +250,7 @@ class UserService {
                 title: 'Berhasil telah mengubah Bio anda!',
                 message: 'Bio berhasil diubah.'
             }
-            const pushNotification = await NotificationService.postNotification(dataNotification)
+            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
             if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
             return true
         } catch (error) {
@@ -281,7 +281,7 @@ class UserService {
                 title: 'Berhasil telah mengubah Nomor Handphone anda!',
                 message: 'Nomor Handphone berhasil diubah.'
             }
-            const pushNotification = await NotificationService.postNotification(dataNotification)
+            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
             if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
             return true
         } catch (error) {
@@ -305,7 +305,7 @@ class UserService {
                 title: 'Berhasil telah mengubah Jenis Kelamin anda!',
                 message: 'Jenis Kelamin berhasil diubah.'
             }
-            const pushNotification = await NotificationService.postNotification(dataNotification)
+            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
             if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
             return true
         } catch (error) {
@@ -329,7 +329,7 @@ class UserService {
                 title: 'Berhasil telah mengubah Tanggal Lahir anda!',
                 message: 'Tanggal Lahir berhasil diubah.'
             }
-            const pushNotification = await NotificationService.postNotification(dataNotification)
+            const pushNotification = await NotificationService.postNotificationUser(dataNotification)
             if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
             return true
         } catch (error) {

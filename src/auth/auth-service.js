@@ -14,15 +14,17 @@ class AuthService {
         const matchPassword = request.password === request.confirmPassword
         if (!matchPassword) throw new ResponseError(400, 'Password Dan Confirm Password Tidak Sesuai')
         const checkUser = await User.count({ where: { email: request.email } })
+        console.log({ checkUser })
         if (checkUser > 0) throw new ResponseError(400, 'Email sudah digunakan')
         const usernameCantUse = AuthValidation.usernameCantUse
         const checkUserAvailable = usernameCantUse.filter(username => username === request.username)
         if (checkUserAvailable.length > 0) throw new ResponseError(400, 'Email Sudah Digunakan')
         let userID = (uuidINT(randomNumber({ min: 0, max: 511, integer: true })).uuid() / 10).toString().split('.').join('')
         userID = userID.length === 15 ? `${userID}0` : userID
-        const SALT = process.env.SALT || 12
+        const SALT = Number(process.env.SALT) || 12
         const hashPassword = await bcrypt.hash(request.password, SALT)
         const OTP = randomNumber({ min: 100000, max: 999999, integer: true })
+        console.log({ OTP })
         const subject = 'OTP Verification'
         const text = `Kode verifikasi akun Foodition anda adalah:`
         const html = HTMLTemplateEmail.RegisterHTML(OTP)
@@ -38,6 +40,7 @@ class AuthService {
             otp: OTP,
             image: defaultPhoto,
         })
+        console.log({ userRegister })
         if (!userRegister) throw new ResponseError(400, 'Register Gagal')
         const dataNotification = {
             user_id: userID,
@@ -45,7 +48,7 @@ class AuthService {
             title: 'Yeayy! Selamat akun anda berhasil dibuat.',
             message: 'Selamat datang di Foodition, Aplikasi pembelian makanan! Gunakan aplikasi dengan bijak, Ayo dukung INDONESIA tanpa kelaparan.'
         }
-        const pushNotification = await NotificationService.postNotification(dataNotification)
+        const pushNotification = await NotificationService.postNotificationUser(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return {
             email: userRegister.email,

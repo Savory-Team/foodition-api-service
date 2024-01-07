@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const { sequelize } = Sequelize
 const database = require('../application/database.js')
-const Notification = require('../notification/notification-model.js')
+const Notification = require('../notification/notification-model-user.js')
 const Restoran = require('../restoran/resto-model.js')
 
 const User = database.define('user', {

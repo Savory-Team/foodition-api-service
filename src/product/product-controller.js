@@ -11,8 +11,27 @@ class ProductController {
     static getProducts = async(req, res, next) => {
         try {
             const userID = req.userID
-            console.log({ userID })
-            const result = await ProductService.getProducts(userID)
+            const { resto, lokasi } = req.query
+            if (resto) {
+                const result = await ProductService.getProductsByResto(userID, resto)
+                res.status(200).json({ error: false, message: 'GET Products By Resto Berhasil', data: result })
+            } else if (lokasi) {
+                const result = await ProductService.getProductsByKota(userID, lokasi)
+                res.status(200).json({ error: false, message: 'GET Products By Lokasi Berhasil', data: result })
+            } else {
+                const result = await ProductService.getProducts(userID)
+                res.status(200).json({ error: false, message: 'GET Products Berhasil', data: result })
+            }
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static getProduct = async(req, res, next) => {
+        try {
+            const userID = req.userID
+            const productID = req.params.id
+            const result = await ProductService.getProduct(userID, productID)
             res.status(200).json({ error: false, message: 'GET Product Berhasil', data: result })
         } catch (error) {
             next(error)

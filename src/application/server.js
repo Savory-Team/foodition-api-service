@@ -10,14 +10,26 @@ const UserRouter = require('../user/user-route.js')
 const RestoRouter = require('../restoran/resto-route.js')
 const NotificationRouter = require('../notification/notification-route.js')
 const ProductRouter = require('../product/product-route.js')
+const FavoriteRouter = require('../favorite/favorite-route.js')
 
 const UserModel = require('../user/user-model.js')
 const RestoranModel = require('../restoran/resto-model.js')
-const NotifikasiModel = require('../notification/notification-model.js')
+const NotifikasiUserModel = require('../notification/notification-model-user.js')
+const NotifikasiRestoModel = require('../notification/notification-model-resto.js')
 const ProductModel = require('../product/product-model.js')
+const FavoriteModel = require('../favorite/favorite-model.js')
+const TransactionModel = require('../transaction/transaction-model.js')
 
 const app = express()
-modelSync(false, [UserModel, RestoranModel, NotifikasiModel, ProductModel])
+modelSync(false, [
+    UserModel,
+    RestoranModel,
+    NotifikasiUserModel,
+    NotifikasiRestoModel,
+    ProductModel,
+    FavoriteModel,
+    TransactionModel
+])
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal'])
 
 app.use(cors({
@@ -46,12 +58,12 @@ app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// Routing
 app.use('/auth', AuthRouter)
 app.use(UserRouter)
 app.use(RestoRouter)
 app.use(NotificationRouter)
 app.use(ProductRouter)
+app.use(FavoriteRouter)
 
 app.get('/', (req, res) => {
     return res.status(200).json({
