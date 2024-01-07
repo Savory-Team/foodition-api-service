@@ -304,7 +304,7 @@ class UserService {
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         const yearNow = new Date().getFullYear()
-        const validUmur = yearNow - request
+        const validUmur = yearNow - request.getFullYear()
         if (validUmur < 18) throw new ResponseError(400, 'Usia Tidak Mencukupi')
         searchUser.tgl_lahir = request ? request : searchUser.dataValues.tgl_lahir
         searchUser.updatedAt = new Date()

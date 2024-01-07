@@ -21,7 +21,7 @@ const UsernameValidation = Joi.string().max(16).required()
 const BioValidation = Joi.string().max(255).required()
 const NomorHandphoneValidation = Joi.string().max(16).required()
 const JenisKelaminValidation = Joi.boolean().required()
-const TanggalLahirValidation = Joi.date().iso().optional().allow('')
+const TanggalLahirValidation = Joi.date().iso().required()
 
 module.exports = {
     AlamatValidation,
