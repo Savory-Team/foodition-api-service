@@ -41,7 +41,7 @@ class RestoController {
             if (!file) throw new ResponseError(400, 'Tidak ada foto yang diunggah')
             const filename = file.filename
             const filePath = path.join(__dirname, '../../uploads', filename)
-            const result = await UserService.updatePhoto(userID, filePath)
+            const result = await RestoService.updatePhoto(userID, filePath)
             res.status(200).json({ error: false, message: 'Ubah Foto Profile Restoran Berhasil', data: result })
         } catch (error) {
             next(error)
