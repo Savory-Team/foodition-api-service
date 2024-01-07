@@ -141,7 +141,7 @@ class UserService {
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         const matchPassword = request.newPassword === request.oldPassword
-        if (!matchPassword) throw new ResponseError(400, 'New Password dan Confirm New Password Tidak Sesuai')
+        if (matchPassword) throw new ResponseError(400, 'New Password dan Confirm New Password Tidak Sesuai')
         const checkPassword = await bcrypt.compare(request.oldPassword, searchUser.dataValues.password)
         if (!checkPassword) throw new ResponseError(400, 'Password Lama Salah')
         const SALT = process.env.SALT || 12
