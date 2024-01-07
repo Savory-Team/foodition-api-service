@@ -38,9 +38,9 @@ class UserService {
             bio: searchMyProfile.dataValues.bio ? searchMyProfile.dataValues.bio : null,
             userID: searchMyProfile.dataValues.user_id ? searchMyProfile.dataValues.user_id : null,
             email: searchMyProfile.dataValues.email ? searchMyProfile.dataValues.email : null,
-            no_hp: searchMyProfile.dataValues.no_hp ? searchMyProfile.dataValues.no_hp : null,
-            jenis_kelamin: searchMyProfile.dataValues.jenis_kelamin ? searchMyProfile.dataValues.jenis_kelamin : null,
-            tgl_lahir: searchMyProfile.dataValues.tgl_lahir ? searchMyProfile.dataValues.tgl_lahir : null,
+            noHp: searchMyProfile.dataValues.no_hp ? searchMyProfile.dataValues.no_hp : null,
+            jenisKelamin: searchMyProfile.dataValues.jenis_kelamin ? searchMyProfile.dataValues.jenis_kelamin : null,
+            tanggalLahir: searchMyProfile.dataValues.tgl_lahir ? searchMyProfile.dataValues.tgl_lahir : null,
         }
     }
 
