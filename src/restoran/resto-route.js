@@ -8,7 +8,7 @@ const RestoRouting = express.Router()
 
 RestoRouting.get('/resto/me', Authentication, RestoController.getResto, errorMiddleware)
 RestoRouting.get('/resto/me/detail', Authentication, RestoController.getDetailResto, errorMiddleware)
-RestoRouting.get('/resto/me/alamat', Authentication, RestoController.getDetailResto, errorMiddleware)
+RestoRouting.get('/resto/me/alamat', Authentication, RestoController.getAlamatResto, errorMiddleware)
 RestoRouting.put('/resto/me/photo', Authentication, upload.single('image'), RestoController.updatePhoto, errorMiddleware)
 RestoRouting.put('/resto/me/alamat', Authentication, RestoController.putAlamat, errorMiddleware)
 
