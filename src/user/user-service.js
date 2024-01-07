@@ -89,7 +89,7 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        return { noHp: `0${searchUser.dataValues.no_hp}` }
+        return { noHp: searchUser.dataValues.no_hp ? `0${searchUser.dataValues.no_hp}` : searchUser.dataValues.no_hp }
     }
 
     static getMyJenisKelamin = async(userID) => {
