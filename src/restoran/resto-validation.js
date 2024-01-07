@@ -13,6 +13,7 @@ const PutAlamatValidation = Joi.object({
 const putRestoValidation = Joi.object({
     nama: Joi.string().max(255).required(),
     username: Joi.string().max(16).required(),
+    noHp: Joi.string().max(16).required(),
     slogan: Joi.string().max(64).required(),
     deskripsi: Joi.string().max(255).required(),
 })

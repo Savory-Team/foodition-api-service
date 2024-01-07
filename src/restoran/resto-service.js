@@ -7,7 +7,7 @@ const User = require('../user/user-model.js')
 const Resto = require('./resto-model.js')
 const Product = require('../product/product-model.js')
 const NotificationService = require('../notification/notification-service.js')
-
+const operator = require('indonesia-number-provider-checker').operator
 
 
 const keyFilename = path.join(__dirname, '../../credentials/storage-admin-key.json')
@@ -107,6 +107,7 @@ class RestoService {
         await GCS.bucket(bucketName).upload(filePath, { destination: destFileName, })
         const url = `https://storage.googleapis.com/${bucketName}/${destFileName}`
         searchUser.image = url
+        searchUser.updatedAt = new Date()
         const updatedUser = await searchUser.save()
         if (!updatedUser) throw new ResponseError(400, 'Update Foto Profile Gagal')
         fs.unlink(filePath)
@@ -131,10 +132,20 @@ class RestoService {
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         const searchResto = await Resto.findOne({ where: { user_id: userID } })
         if (!searchUser) throw new ResponseError(400, 'Restoran Tidak Ada')
+        const noHp = request
+        const providerValid = operator(request.noHp)
+        if (providerValid === 'Unknown') throw new ResponseError(400, 'Nomor Telepone Tidak Valid')
+        if (noHp[0] === '0') {
+            request['noHp'] = noHp.replace(/^0+/, '')
+        } else if (noHp[0] === '6') {
+            request['noHp'] = noHp.replace(/^62+/, '')
+        }
+        searchResto.no_hp = request.noHp ? request.noHp : searchResto.dataValues.no_hp
         searchResto.nama = request.nama ? request.nama : searchResto.dataValues.nama
         searchResto.username = request.username ? request.username : searchResto.dataValues.username
         searchResto.slogan = request.slogan ? request.slogan : searchResto.dataValues.slogan
         searchResto.deskripsi = request.deskripsi ? request.deskripsi : searchResto.dataValues.deskripsi
+        searchResto.updatedAt = new Date()
         const updateDataResto = await searchResto.save()
         if (!updateDataResto) throw new ResponseError(400, 'Ubah Data Restoran Gagal')
         const dataNotification = {
@@ -162,6 +173,7 @@ class RestoService {
         searchResto.kecamatan = request.kecamatan ? request.kecamatan : searchResto.dataValues.kecamatan
         searchResto.kelurahan = request.kelurahan ? request.kelurahan : searchResto.dataValues.kelurahan
         searchResto.alamat_lengkap = request.alamatLengkap ? request.alamatLengkap : searchResto.dataValues.alamat_lengkap
+        searchResto.updatedAt = new Date()
         const updateAlamatResto = await searchResto.save()
         if (!updateAlamatResto) throw new ResponseError(400, 'Ubah Alamat Restoran Gagal')
         const dataNotification = {

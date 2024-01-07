@@ -1,7 +1,6 @@
 const path = require('path')
 const fs = require('fs').promises
 const bcrypt = require('bcrypt')
-const { v4: uuidv4 } = require('uuid')
 const { Storage } = require('@google-cloud/storage')
 const ResponseError = require('../middleware/response-error')
 const User = require('./user-model.js')
