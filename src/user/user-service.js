@@ -144,7 +144,7 @@ class UserService {
         if (matchPassword) throw new ResponseError(400, 'New Password dan Confirm New Password Tidak Sesuai')
         const checkPassword = await bcrypt.compare(request.oldPassword, searchUser.dataValues.password)
         if (!checkPassword) throw new ResponseError(400, 'Password Lama Salah')
-        const SALT = process.env.SALT || 12
+        const SALT = Number(process.env.SALT) || 12
         const hashPassword = await bcrypt.hash(request.newPassword, SALT)
         searchUser.password = hashPassword
         const updatePassword = await searchUser.save()
