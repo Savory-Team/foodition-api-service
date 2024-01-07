@@ -159,7 +159,7 @@ class UserController {
     static putMyUsername = async(req, res, next) => {
         try {
             const userID = req.userID
-            const request = req.body
+            const request = req.body.username
             const validRequest = validate(UserValidation.UsernameValidation, request)
             const result = await UserService.putMyUsername(userID, validRequest)
             return res.status(200).json({ error: false, message: 'Ubah Username Saya Berhasil', data: result })
@@ -171,7 +171,7 @@ class UserController {
     static putMyBio = async(req, res, next) => {
         try {
             const userID = req.userID
-            const request = req.body
+            const request = req.body.bio
             const validRequest = validate(UserValidation.BioValidation, request)
             const result = await UserService.putMyBio(userID, validRequest)
             return res.status(200).json({ error: false, message: 'Ubah Bio Saya Berhasil', data: result })
@@ -195,7 +195,7 @@ class UserController {
     static putMyJenisKelamin = async(req, res, next) => {
         try {
             const userID = req.userID
-            const request = req.body
+            const request = req.body.jenisKelamin
             const validRequest = validate(UserValidation.JenisKelaminValidation, request)
             const result = await UserService.putMyJenisKelamin(userID, validRequest)
             return res.status(200).json({ error: false, message: 'Ubah Jenis Kelamin Saya Berhasil', data: result })
@@ -207,7 +207,7 @@ class UserController {
     static putMyTanggalLahir = async(req, res, next) => {
         try {
             const userID = req.userID
-            const request = req.body
+            const request = req.body.tanggalLahir
             const validRequest = validate(UserValidation.TanggalLahirValidation, request)
             const result = await UserService.putMyTanggalLahir(userID, validRequest)
             return res.status(200).json({ error: false, message: 'Ubah Tanggal Lahir Saya Berhasil', data: result })
