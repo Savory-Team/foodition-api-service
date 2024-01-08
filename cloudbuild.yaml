@@ -3,7 +3,7 @@ steps:
     args: 
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/foodition-service:$COMMIT_SHA'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/foodition/foodition-service:$COMMIT_SHA'
       - '.'
   - name: gcr.io/cloud-builders/docker
     args:
