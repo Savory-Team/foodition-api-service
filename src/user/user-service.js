@@ -132,7 +132,7 @@ class UserService {
         const pushNotification = await NotificationService.postNotificationUser(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return {
-            userID: updatedUser.dataValues.userID ? updatedUser.dataValues.userID : null,
+            userID: updatedUser.dataValues.user_id ? updatedUser.dataValues.user_id : null,
             image: updatedUser.dataValues.image ? updatedUser.dataValues.image : null
         }
     }
@@ -280,14 +280,14 @@ class UserService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        const jenisKelamin = searchUser.dataValues
+        const jenisKelamin = searchUser.dataValues.jenis_kelamin
         if (jenisKelamin !== null) throw new ResponseError(400, 'Jenis Kelamin Tidak Dapat Diubah')
         searchUser.jenis_kelamin = request ? request : jenisKelamin
         searchUser.updatedAt = new Date()
         const ubahJenisKelamin = await searchUser.save()
         if (!ubahJenisKelamin) throw new ResponseError(400, 'Ubah Jenis Kelamin Gagal')
         const dataNotification = {
-            user_id: userID,
+            user_id: searchUser.dataValues.user_id,
             type: '0',
             title: 'Berhasil telah mengubah Jenis Kelamin anda!',
             message: 'Jenis Kelamin berhasil diubah.'
