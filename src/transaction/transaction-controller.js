@@ -107,11 +107,12 @@ class TransactionController {
             const userID = req.userID
             const transactionID = req.params.id
             const status = parseInt(req.params.status)
-            if (status !== 2 || status !== 3) throw new ResponseError(400, 'Status Pesanan Tidak Valid')
+            console.log(status)
             const validUserID = validate(TransactionValidation.UserIDValidation, userID)
-            const validTransactionID = validate(TransactionValidation.RatingValidation, transactionID)
-            const result = await TransactionService.putTransaction(validUserID, validTransactionID, status)
-            res.status(200).json({ error: false, Message: 'Updat Status Pesanan Berhasil', data: result })
+            const validTransactionID = validate(TransactionValidation.TransactionIDValidation, transactionID)
+            const validStatus = validate(TransactionValidation.StatusValidation, status)
+            const result = await TransactionService.putTransaction(validUserID, validTransactionID, validStatus)
+            res.status(200).json({ error: false, Message: 'Update Status Pesanan Berhasil', data: result })
         } catch (error) {
             next(error)
         }

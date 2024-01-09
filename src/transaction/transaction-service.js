@@ -299,7 +299,9 @@ class TransactionService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        const searchTransaction = await Transaction.findOne({ where: { transaction_id: transactionID, status: status - 1 } })
+        console.log(status)
+        const statusAwal = status !== 0 ? status - 1 : status
+        const searchTransaction = await Transaction.findOne({ where: { transaction_id: transactionID, status: statusAwal } })
         if (!searchTransaction) throw new ResponseError(400, 'Transaksi Tidak Ada')
         const searchResto = await Product.findOne({
             where: { product_id: searchTransaction.dataValues.product_id },

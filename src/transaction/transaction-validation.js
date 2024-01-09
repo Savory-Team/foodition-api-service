@@ -9,11 +9,12 @@ const BuyProductValidation = Joi.object({
 const UserIDValidation = Joi.string().max(255).required()
 const TransactionIDValidation = Joi.string().max(255).required()
 const RatingValidation = Joi.number().integer().max(5).positive().required()
+const StatusValidation = Joi.number().integer().max(4).positive().required()
 
 module.exports = {
     BuyProductValidation,
     UserIDValidation,
     TransactionIDValidation,
     RatingValidation,
-    RatingValidation
+    StatusValidation
 }
