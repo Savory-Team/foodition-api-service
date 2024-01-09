@@ -147,7 +147,7 @@ class TransactionService {
             status: 0,
             rating: 0,
         }
-        const createTransaction = await Transaction.save(pembelian)
+        const createTransaction = await Transaction.create(pembelian)
         if (!createTransaction) throw new ResponseError(400, 'Membeli Makanan Gagal')
         searchProduct.porsi = searchProduct.dataValues.porsi !== 0 ? searchProduct.dataValues.porsi - 1 : searchProduct.dataValues.porsi
         searchProduct.updatedAt = new Date()
