@@ -26,13 +26,13 @@ class ProductService {
             where: { active: true },
             include: [{
                 model: Favorite,
-                required: true
+                required: false
             }, {
                 model: Resto,
-                required: true
+                required: false
             }, {
                 model: Transaction,
-                required: true
+                required: false
             }]
         })
         if (searchProducts.length === 0) throw new ResponseError(404, 'Products Tidak Ada')
@@ -100,7 +100,7 @@ class ProductService {
             where: { active: true },
             include: [{
                 model: Resto,
-                required: true,
+                required: false,
                 where: {
                     nama: {
                         [Op.like]: `%${namaResto}%`
@@ -108,10 +108,10 @@ class ProductService {
                 }
             }, {
                 model: Favorite,
-                required: true
+                required: false
             }, {
                 model: Transaction,
-                required: true
+                required: false
             }]
         })
         if (searchProducts.length === 0) throw new ResponseError(404, 'Products Tidak Ada')
@@ -189,15 +189,15 @@ class ProductService {
             },
             include: {
                 model: Product,
-                required: true,
+                required: false,
                 where: { active: true },
                 include: [{
                         model: Favorite,
-                        required: true
+                        required: false
                     },
                     {
                         model: Transaction,
-                        required: true
+                        required: false
                     }
                 ]
             }
