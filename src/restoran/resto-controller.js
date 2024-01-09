@@ -2,6 +2,7 @@ const path = require('path')
 const validate = require('../middleware/validation.js')
 const RestoService = require('./resto-service.js')
 const RestoValidation = require('./resto-validation.js')
+const ResponseError = require('../middleware/response-error.js')
 
 class RestoController {
     static getResto = async(req, res, next) => {
