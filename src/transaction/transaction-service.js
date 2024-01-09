@@ -200,7 +200,7 @@ class TransactionService {
             title: 'Memberi Rating Makanan Berhasil!',
             message: 'Selamat anda berhasil membeli rating pada makanan, Rating anda sangat membantu kami untuk meningkatkan pelayanan!',
         }
-        const pushNotificationUser = await NotificationService.postNotificationResto(dataNotificationUser)
+        const pushNotificationUser = await NotificationService.postNotificationUser(dataNotificationUser)
         if (!pushNotificationUser) throw new ResponseError(400, 'Send Notification Gagal')
         const dataNotificationResto = {
             user_id: searchResto.dataValues.user_id,
