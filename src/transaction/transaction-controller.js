@@ -1,6 +1,7 @@
 const TransactionService = require('./transaction-service.js')
 const TransactionValidation = require('./transaction-validation.js')
 const validate = require('../middleware/validation.js')
+const ResponseError = require('../middleware/response-error.js')
 
 class TransactionController {
     static getHistoryUser = async(req, res, next) => {
