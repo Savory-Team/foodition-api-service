@@ -142,7 +142,7 @@ class TransactionService {
             transaction_id: uuidv4().toString(),
             product_id: searchProduct.dataValues.product_id || productID,
             user_id: searchUser.dataValues.user_id || userID,
-            price,
+            price: type ? price : 0,
             type,
             status: 0,
             rating: 0,
