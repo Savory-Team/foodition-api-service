@@ -9,7 +9,7 @@ const Product = require('./product-model.js')
 const Favorite = require('../favorite/favorite-model.js')
 const ResponseError = require('../middleware/response-error.js')
 const NotificationService = require('../notification/notification-service.js');
-const { required } = require('joi');
+const Transaction = require('../transaction/transaction-model.js');
 
 
 const keyFilename = path.join(__dirname, '../../credentials/storage-admin-key.json')
@@ -26,10 +26,13 @@ class ProductService {
             where: { active: true },
             include: [{
                 model: Favorite,
-                required: false
+                required: true
             }, {
                 model: Resto,
-                required: false
+                required: true
+            }, {
+                model: Transaction,
+                required: true
             }]
         })
         if (searchProducts.length === 0) throw new ResponseError(404, 'Products Tidak Ada')
@@ -40,6 +43,10 @@ class ProductService {
             const kagetoriProduct = product.dataValues.kategori
             const resultKategori = kagetoriProduct.replace(/,\s+/g, ',');
             const listKategori = resultKategori.split(',')
+            const transactions = product.dataValues.transactions
+            let rating = 0
+            transactions.forEach(transaction => rating += transaction.dataValues.rating)
+            if (rating > 0) rating = rating / parseInt(transactions.length)
             return {
                 product_id: product.dataValues.product_id,
                 image: product.dataValues.image,
@@ -52,7 +59,8 @@ class ProductService {
                 resto_id: product.dataValues.resto_id,
                 nama_resto: product.dataValues.restoran.dataValues.nama,
                 lokasi: lokasiRestoran,
-                favorites: product.dataValues.favorites
+                favorites: product.dataValues.favorites,
+                rating: rating.toString()
             }
         })
         const productsAfterFavorite = productsAfterUpdateKategori.map(product => {
@@ -78,6 +86,7 @@ class ProductService {
                 namaRestoran: product.nama_resto,
                 lokasi: product.lokasi,
                 isFavorite: product.isFavorite,
+                rating: product.rating
             }
         })
     }
@@ -100,6 +109,9 @@ class ProductService {
             }, {
                 model: Favorite,
                 required: true
+            }, {
+                model: Transaction,
+                required: true
             }]
         })
         if (searchProducts.length === 0) throw new ResponseError(404, 'Products Tidak Ada')
@@ -110,6 +122,10 @@ class ProductService {
             const kagetoriProduct = product.dataValues.kategori
             const resultKategori = kagetoriProduct.replace(/,\s+/g, ',');
             const listKategori = resultKategori.split(',')
+            const transactions = product.dataValues.transactions
+            let rating = 0
+            transactions.forEach(transaction => rating += transaction.dataValues.rating)
+            if (rating > 0) rating = rating / parseInt(transactions.length)
             return {
                 product_id: product.dataValues.product_id,
                 image: product.dataValues.image,
@@ -122,7 +138,8 @@ class ProductService {
                 resto_id: product.dataValues.resto_id,
                 nama_resto: product.dataValues.restoran.dataValues.nama,
                 lokasi: lokasiRestoran,
-                favorites: product.dataValues.favorites
+                favorites: product.dataValues.favorites,
+                rating: rating.toString(),
             }
         })
         const productsAfterFavorite = productsAfterUpdateKategori.map(product => {
@@ -148,6 +165,7 @@ class ProductService {
                 namaRestoran: product.nama_resto,
                 lokasi: product.lokasi,
                 isFavorite: product.isFavorite,
+                rating: product.rating
             }
         })
     }
@@ -169,18 +187,28 @@ class ProductService {
                     }
                 }]
             },
-            include: [{
+            include: {
                 model: Product,
                 required: true,
                 where: { active: true },
-                include: {
-                    model: Favorite,
-                    required: false
-                }
-            }]
+                include: [{
+                        model: Favorite,
+                        required: true
+                    },
+                    {
+                        model: Transaction,
+                        required: true
+                    }
+                ]
+            }
         })
+
         const restoProducts = searchResto.map(resto => {
             const products = resto.products.map(product => {
+                const transactions = product.dataValues.transactions
+                let rating = 0
+                transactions.forEach(transaction => rating += transaction.dataValues.rating)
+                if (rating > 0) rating = rating / parseInt(transactions.length)
                 return {
                     product_id: product.dataValues.product_id,
                     active: product.dataValues.active,
@@ -193,7 +221,8 @@ class ProductService {
                     resto_id: resto.dataValues.resto_id,
                     nama_resto: resto.dataValues.nama,
                     lokasi: resto.dataValues.kota_kab,
-                    favorites: product.dataValues.favorites
+                    favorites: product.dataValues.favorites,
+                    rating: rating.toString()
                 }
             })
             return products
@@ -223,6 +252,7 @@ class ProductService {
                 namaRestoran: product.nama_resto,
                 lokasi: product.lokasi,
                 isFavorite: product.isFavorite,
+                rating: product.rating
             }
         })
     }

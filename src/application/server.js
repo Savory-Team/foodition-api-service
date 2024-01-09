@@ -11,6 +11,7 @@ const RestoRouter = require('../restoran/resto-route.js')
 const NotificationRouter = require('../notification/notification-route.js')
 const ProductRouter = require('../product/product-route.js')
 const FavoriteRouter = require('../favorite/favorite-route.js')
+const TransactionRoute = require('../transaction/transaction-route.js')
 
 const UserModel = require('../user/user-model.js')
 const RestoranModel = require('../restoran/resto-model.js')
@@ -64,6 +65,7 @@ app.use(RestoRouter)
 app.use(NotificationRouter)
 app.use(ProductRouter)
 app.use(FavoriteRouter)
+app.use(TransactionRoute)
 
 app.get('/', (req, res) => {
     return res.status(200).json({

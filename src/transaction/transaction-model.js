@@ -20,15 +20,15 @@ const Transaction = database.define('transaction', {
         allowNull: false,
     },
     price: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     type: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1),
         allowNull: false,
     },
     status: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1),
         allowNull: false,
     },
     rating: {
