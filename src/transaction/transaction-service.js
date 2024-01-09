@@ -131,10 +131,18 @@ class TransactionService {
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         const { productID, price, type } = request
-        const searchProduct = await Product.findOne({ where: { product_id: productID, active: true } })
+        const searchProduct = await Product.findOne({
+            where: {
+                product_id: productID,
+                active: true,
+            },
+            include: {
+                model: Resto,
+                required: true,
+            }
+        })
         if (!searchProduct) throw new ResponseError(400, 'Produk Tidak Ada')
-        const searchResto = await Resto.findOne({ where: { resto_id: searchProduct.dataValues.resto_id } })
-        if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
+        const searchResto = searchProduct.dataValues.restoran
         const beliBarangSendiri = searchResto.dataValues.user_id === searchUser.dataValues.user_id
         if (beliBarangSendiri) throw new ResponseError(400, 'Tidak Bisa Membeli Makanan Sendiri')
         if (searchProduct.dataValues.porsi === 0) throw new ResponseError(400, 'Produk Sudah Habis')
@@ -159,7 +167,7 @@ class TransactionService {
             title: 'Berhasil Membeli Makanan!',
             message: 'Selamat anda berhasil membeli makanan, semoga anda suka dengan makanannya!',
         }
-        const pushNotificationUser = await NotificationService.postNotificationResto(dataNotificationUser)
+        const pushNotificationUser = await NotificationService.postNotificationUser(dataNotificationUser)
         if (!pushNotificationUser) throw new ResponseError(400, 'Send Notification Gagal')
         const dataNotificationResto = {
             user_id: searchResto.dataValues.user_id,
