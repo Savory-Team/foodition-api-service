@@ -190,7 +190,7 @@ class TransactionService {
         })
         if (!searchTransaction) throw new ResponseError(400, 'Transaksi Tidak Ada')
         if (searchTransaction.dataValues.rating > 0) throw new ResponseError(400, 'Rating Sudah Ada')
-        if (searchTransaction.dataValues.status !== 2) throw new ResponseError(400, 'Transaksi Belum Selesai')
+        if (searchTransaction.dataValues.status !== '2') throw new ResponseError(400, 'Transaksi Belum Selesai')
         searchTransaction.rating = rating || searchTransaction.dataValues.rating
         const updateTransaction = await searchTransaction.save()
         if (!updateTransaction) throw new ResponseError(400, 'Memberi Rating Makanan Gagal')
@@ -299,7 +299,6 @@ class TransactionService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        console.log(status)
         const statusAwal = status !== 0 ? status - 1 : status
         const searchTransaction = await Transaction.findOne({ where: { transaction_id: transactionID, status: statusAwal } })
         if (!searchTransaction) throw new ResponseError(400, 'Transaksi Tidak Ada')
