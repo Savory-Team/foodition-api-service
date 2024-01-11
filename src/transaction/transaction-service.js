@@ -273,13 +273,6 @@ class TransactionService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
-        const searchProduct = await Product.findOne({
-            where: { transaction_id: transactionID },
-            include: { model: Resto, required: true }
-        })
-        if (!searchProduct) throw new ResponseError(400, 'Makanan Tidak Ada')
-        const searchResto = searchProduct.dataValues.restoran
-        if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
         const searchTransaction = await Transaction.findOne({
             where: {
                 transaction_id: transactionID,
@@ -288,9 +281,14 @@ class TransactionService {
                     [Op.lt]: 2
 
                 }
-            }
+            },
+            include: { model: Product, required: true, include: { model: Resto, required: true } }
         })
         if (!searchTransaction) throw new ResponseError(400, 'Transaksi Tidak Ada')
+        const { product: searchProduct } = searchTransaction.dataValues
+        if (!searchProduct) throw new ResponseError(400, 'Makanan Tidak Ada')
+        const { restoran: searchResto } = searchProduct.dataValues
+        if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
         searchTransaction.status = 3
         searchTransaction.updatedAt = new Date()
         const updateStatusTransaction = await searchTransaction.save()
