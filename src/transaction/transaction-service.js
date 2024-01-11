@@ -237,13 +237,31 @@ class TransactionService {
                 status: {
                     [Op.lt]: 2
                 }
+            },
+            include: {
+                model: Product,
+                required: true,
+                include: {
+                    model: Resto,
+                    required: true,
+                    include: {
+                        model: User,
+                        required: true,
+                        where: {
+                            user_id: userID
+                        }
+                    }
+                }
             }
         })
         if (!searchTransaction) throw new ResponseError(400, 'Transaksi Tidak Ada')
-        const searchResto = await Product.findOne({
-            where: { product_id: searchTransaction.dataValues.product_id },
-            include: { model: Resto, required: true, incude: { model: User, required: true, where: { user_id: userID } } }
-        })
+        const { product: searchProduct } = searchTransaction.dataValues
+        if (!searchProduct) throw new ResponseError(400, 'Product Tidak Ada')
+        const { restoran: searchResto } = searchProduct.dataValues
+        if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
+        const { user: searchUserOwnerResto } = searchResto.dataValues
+        if (!searchUserOwnerResto) throw new ResponseError(400, 'User Tidak Ada')
+        if (searchUser.dataValues.user_id !== searchUserOwnerResto.dataValues.user_id) throw new ResponseError(400, 'Bukan Restoran Anda')
         if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
         searchTransaction.status = 4
         searchTransaction.updatedAt = new Date()
