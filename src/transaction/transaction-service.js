@@ -1,5 +1,6 @@
 const moment = require('moment');
 const { v4: uuidv4 } = require('uuid')
+const { Op } = require('sequelize')
 const User = require('../user/user-model.js')
 const Product = require('../product/product-model.js')
 const Resto = require('../restoran/resto-model.js')
@@ -130,6 +131,18 @@ class TransactionService {
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        const {
+            user_id,
+            username,
+            no_hp,
+            provinsi,
+            kota_kab: kotaKab,
+            kecamatan,
+            kelurahan,
+            alamat_lengkap: alamatLengkap
+        } = searchResto.dataValues
+        const validateDataUser = user_id && username && no_hp && provinsi && kotaKab && kecamatan && kelurahan && alamatLengkap
+        if (!validateDataUser) throw new ResponseError(400, 'Data User Tidak Lengkap')
         const { productID, price, type } = request
         const searchProduct = await Product.findOne({
             where: {

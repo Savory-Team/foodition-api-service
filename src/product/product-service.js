@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs').promises
-const { Op, where } = require('sequelize');
+const { Op } = require('sequelize')
 const { v4: uuidv4 } = require('uuid')
 const { Storage } = require('@google-cloud/storage')
 const User = require('../user/user-model.js')
