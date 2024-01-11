@@ -255,7 +255,7 @@ class TransactionService {
             title: 'Maaf! Pesanan anda telah dibatalkan oleh Restoran',
             message: 'Sayang sekali pesanan anda telah dibatalkan oleh Restoran, silahkan cari makanan yang lainnya'
         }
-        const pushNotificationUser = await NotificationService.postNotificationResto(dataNotificationUser)
+        const pushNotificationUser = await NotificationService.postNotificationUser(dataNotificationUser)
         if (!pushNotificationUser) throw new ResponseError(400, 'Send Notification Gagal')
         const dataNotificationResto = {
             user_id: searchResto.dataValues.user_id,
