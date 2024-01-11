@@ -2,8 +2,8 @@ const Joi = require('joi')
 
 const BuyProductValidation = Joi.object({
     productID: Joi.string().max(255).required(),
-    price: Joi.number().integer().positive().required(),
-    type: Joi.number().integer().positive().required(),
+    price: Joi.number().integer().positive().required().allow(0),
+    type: Joi.boolean().required(),
 })
 
 const UserIDValidation = Joi.string().max(255).required()
