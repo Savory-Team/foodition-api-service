@@ -140,7 +140,7 @@ class TransactionService {
             kecamatan,
             kelurahan,
             alamat_lengkap: alamatLengkap
-        } = searchResto.dataValues
+        } = searchUser.dataValues
         const validateDataUser = user_id && username && no_hp && provinsi && kotaKab && kecamatan && kelurahan && alamatLengkap
         if (!validateDataUser) throw new ResponseError(400, 'Data User Tidak Lengkap')
         const { productID, price, type } = request
