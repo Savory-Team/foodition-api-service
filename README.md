@@ -15,6 +15,7 @@ Some resources to help you get started with this project:
 - [Foodition Postman Collection](https://drive.google.com/file/d/1JKb2NRpIlFDJGIwS3-L0veO52-XR2OfJ/view?usp=sharing)
 
 Link Project Deployment
+
 | https://foodition-service-j6grq6r7wa-uc.a.run.app/ |
 
 # Cloud Architecture
