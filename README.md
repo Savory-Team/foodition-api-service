@@ -28,9 +28,6 @@ Foodition Postman Collection : https://drive.google.com/file/d/1JKb2NRpIlFDJGIwS
 - Node.js: JavaScript Runtime Engine that runs on the server side to develop efficient and event-driven web applications.
 - Express.js: Node.js web framework that simplifies server-side application development by providing functions and tools.
 - MySQL: A relational database management system (RDBMS) used to store and manage relational data.
-- Python: A versatile and popular programming language, used for web development, artificial intelligence, data analysis, and more.
-- Flask: Python framework for developing server-side applications (backend applications) easily.
-- TensorFlow: A machine learning framework developed by Google for building and training machine learning models.
 - Postman: An API development tool that makes testing, documentation, and collaboration on APIs easy.
 - Docker: A containerization platform that allows packaging, distribution, and execution of applications along with all their dependencies in containers.
 - Git/GitHub: A version control system used to track changes in source code during software development. And Hosting platform for software projects that use Git for version control.
