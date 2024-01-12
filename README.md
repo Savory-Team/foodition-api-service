@@ -20,5 +20,5 @@ Link Project Deployment
 # Cloud Architecture
 <div>
 	<div align="center">
-	<img src="https://github.com/Savory-Team/.github/blob/main/profile/cloud%20architecture.png" alt="Cloud Arsitektur" style="width:75%;">
+	<img src="https://github.com/Savory-Team/.github/blob/main/profile/cloud%20architecture.png" alt="Cloud Arsitektur" style="width:100%;">
 </div>
