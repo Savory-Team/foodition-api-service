@@ -13,8 +13,8 @@ This project is a starting point for a Backend application using Node.js and Exp
 
 Some resources to help you get started with this project:
 
-| Link Project Deployment | https://foodition-service-j6grq6r7wa-uc.a.run.app/ |
-| Foodition Postman Collection | https://drive.google.com/file/d/1JKb2NRpIlFDJGIwS3-L0veO52-XR2OfJ/view?usp=sharing |
+Link Project Deployment : https://foodition-service-j6grq6r7wa-uc.a.run.app
+Foodition Postman Collection : https://drive.google.com/file/d/1JKb2NRpIlFDJGIwS3-L0veO52-XR2OfJ/view?usp=sharing
 
 # Cloud Architecture
 <div>
