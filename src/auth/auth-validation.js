@@ -28,9 +28,7 @@ const VerifyValidation = Joi.object({
     otp: Joi.string().min(6).max(6).required(),
 })
 
-const EmailValidation = Joi.object({
-    email: Joi.string().min(5).max(255).required(),
-})
+const EmailValidation = Joi.string().min(5).max(255).required()
 
 const ForgotPasswordValidation = Joi.object({
     email: Joi.string().min(5).max(255).required(),

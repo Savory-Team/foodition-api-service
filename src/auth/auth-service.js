@@ -78,20 +78,20 @@ class AuthService {
         return { verify: true }
     }
 
-    static getOTP = async(request) => {
-        const checkUser = await User.findOne({ where: { email: request.email } })
-        if (!checkUser) throw new ResponseError(400, 'User Tidak Ada')
+    static getOTP = async(email) => {
+        const searchUser = await User.findOne({ where: { email } })
+        if (!searchUser) throw new ResponseError(400, 'User Tidak Ada')
         const OTP = randomNumber({ min: 100000, max: 999999, integer: true })
         const subject = 'OTP Verification'
         const text = `Kode verifikasi akun Foodition anda adalah:`
         const html = HTMLTemplateEmail.GetOTPTemplate(OTP)
-        const sendEmailService = await sendEmail(request.email, subject, text, html)
+        const sendEmailService = await sendEmail(email, subject, text, html)
         if (!sendEmailService) throw new ResponseError(400, 'OTP Gagal Dikirim')
-        checkUser.otp = OTP
-        const updatedUser = await checkUser.save()
+        searchUser.otp = OTP
+        const updatedUser = await searchUser.save()
         if (!updatedUser) throw new ResponseError(400, 'OTP Gagal Dikirim')
         return {
-            email: updatedUser.email,
+            email,
             verify: 'Check Email Untuk Melihat OTP'
         }
     }

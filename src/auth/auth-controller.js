@@ -46,11 +46,11 @@ class AuthController {
 
     static getOTP = async(req, res, next) => {
         try {
-            const request = req.body
-            const validRequest = validate(AuthValidation.EmailValidation, request)
-            const isEmail = validator.isEmail(validRequest.email)
+            const email = req.body.email
+            const validEmail = validate(AuthValidation.EmailValidation, email)
+            const isEmail = validator.isEmail(validEmail)
             if (!isEmail) throw new ResponseError(400, 'Email Tidak Valid')
-            const result = await AuthService.getOTP(validRequest)
+            const result = await AuthService.getOTP(validEmail)
             res.status(200).json({ error: false, message: 'OTP Berhasil Dikirimkan', data: result })
         } catch (error) {
             next(error)

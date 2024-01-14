@@ -32,7 +32,7 @@ class RestoService {
                 nama: searchResto.dataValues.nama ? searchResto.dataValues.nama : null,
                 noHp: searchResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
                 slogan: searchResto.dataValues.slogan ? searchResto.dataValues.slogan : null,
-                totalProduct: countProductsResto
+                totalProduct: countProductsResto ? countProductsResto : 0
             }
         }
         const defaultPhoto = 'https://storage.googleapis.com/savory/api-service/user/default-user-image.png'
@@ -54,12 +54,13 @@ class RestoService {
         const pushNotification = await NotificationService.postNotificationResto(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         return {
-            restoID: createResto.dataValues.resto_id ? searchResto.dataValues.resto_id : null,
-            userID: createResto.dataValues.user_id ? searchResto.dataValues.user_id : null,
-            nama: createResto.dataValues.nama ? searchResto.dataValues.nama : null,
-            noHp: createResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
-            image: createResto.dataValues.image ? searchResto.dataValues.image : null,
-            slogan: createResto.dataValues.slogan ? searchResto.dataValues.slogan : null,
+            restoID: newRestoran.resto_id ? newRestoran.resto_id : null,
+            userID: newRestoran.user_id ? newRestoran.user_id : null,
+            image: defaultPhoto ? defaultPhoto : null,
+            nama: newRestoran.nama ? newRestoran.nama : null,
+            noHp: newRestoran.no_hp ? newRestoran.no_hp : null,
+            slogan: null,
+            totalProduct: 0
         }
     }
 

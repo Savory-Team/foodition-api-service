@@ -9,7 +9,7 @@ class RestoController {
         try {
             const userID = req.userID
             const result = await RestoService.getResto(userID)
-            return res.status(200).json({ error: false, message: 'GET Restoran Berhasil', data: result })
+            res.status(200).json({ error: false, message: 'GET Restoran Berhasil', data: result })
         } catch (error) {
             next(error)
         }
@@ -19,7 +19,7 @@ class RestoController {
         try {
             const userID = req.userID
             const result = await RestoService.getDetailResto(userID)
-            return res.status(200).json({ error: false, message: 'GET Detail Restoran Berhasil', data: result })
+            res.status(200).json({ error: false, message: 'GET Detail Restoran Berhasil', data: result })
         } catch (error) {
             next(error)
         }
@@ -29,7 +29,7 @@ class RestoController {
         try {
             const userID = req.userID
             const result = await RestoService.getAlamatResto(userID)
-            return res.status(200).json({ error: false, message: 'GET Alamat Restoran Berhasil', data: result })
+            res.status(200).json({ error: false, message: 'GET Alamat Restoran Berhasil', data: result })
         } catch (error) {
             next(error)
         }
@@ -55,7 +55,7 @@ class RestoController {
             const request = req.body
             const validRequest = validate(RestoValidation.putRestoValidation, request)
             const result = await RestoService.putResto(userID, validRequest)
-            return res.status(200).json({ error: false, message: 'Ubah Data Restoran Berhasil', data: result })
+            res.status(200).json({ error: false, message: 'Ubah Data Restoran Berhasil', data: result })
         } catch (error) {
             next(error)
         }
@@ -67,7 +67,7 @@ class RestoController {
             const request = req.body
             const validRequest = validate(RestoValidation.PutAlamatValidation, request)
             const result = await RestoService.putAlamat(userID, validRequest)
-            return res.status(200).json({ error: false, message: 'Ubah Alamat Restoran Berhasil', data: result })
+            res.status(200).json({ error: false, message: 'Ubah Alamat Restoran Berhasil', data: result })
         } catch (error) {
             next(error)
         }
