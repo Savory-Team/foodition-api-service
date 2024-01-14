@@ -46,7 +46,7 @@ class AuthController {
 
     static getOTP = async(req, res, next) => {
         try {
-            const email = req.body.email
+            const email = req.query.email
             const validEmail = validate(AuthValidation.EmailValidation, email)
             const isEmail = validator.isEmail(validEmail)
             if (!isEmail) throw new ResponseError(400, 'Email Tidak Valid')
