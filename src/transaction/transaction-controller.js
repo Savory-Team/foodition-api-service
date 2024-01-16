@@ -9,7 +9,7 @@ class TransactionController {
             const userID = req.userID
             const validUserID = validate(TransactionValidation.UserIDValidation, userID)
             const result = await TransactionService.getHistoryUser(validUserID)
-            if (result === 404) return res.status(404).json({ error: true, message: 'History Pembelian Tidak Ada', data: [] })
+            if (result === 404) return res.status(200).json({ error: false, message: 'History Pembelian Tidak Ada', data: [] })
             res.status(200).json({ error: false, Message: 'GET History Pembelian Berhasil', data: result })
         } catch (error) {
             next(error)
@@ -34,7 +34,7 @@ class TransactionController {
             const userID = req.userID
             const validUserID = validate(TransactionValidation.UserIDValidation, userID)
             const result = await TransactionService.getHistoryResto(validUserID)
-            if (result === 404) return res.status(404).json({ error: true, message: 'History Penjualan Tidak Ada', data: [] })
+            if (result === 404) return res.status(200).json({ error: false, message: 'History Penjualan Tidak Ada', data: [] })
             res.status(200).json({ error: false, Message: 'GET History Penjualan Berhasil', data: result })
         } catch (error) {
             next(error)

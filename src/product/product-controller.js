@@ -14,15 +14,15 @@ class ProductController {
             const { resto, lokasi } = req.query
             if (resto) {
                 const result = await ProductService.getProductsByResto(userID, resto)
-                if (result === 404) return res.status(404).json({ error: true, message: 'Products Tidak Ada', data: [] })
+                if (result === 404) return res.status(200).json({ error: false, message: 'Products Tidak Ada', data: [] })
                 res.status(200).json({ error: false, message: 'GET Products By Resto Berhasil', data: result })
             } else if (lokasi) {
                 const result = await ProductService.getProductsByKota(userID, lokasi)
-                if (result === 404) return res.status(404).json({ error: true, message: 'Products Tidak Ada', data: [] })
+                if (result === 404) return res.status(200).json({ error: false, message: 'Products Tidak Ada', data: [] })
                 res.status(200).json({ error: false, message: 'GET Products By Lokasi Berhasil', data: result })
             } else {
                 const result = await ProductService.getProducts(userID)
-                if (result === 404) return res.status(404).json({ error: true, message: 'Products Tidak Ada', data: [] })
+                if (result === 404) return res.status(200).json({ error: false, message: 'Products Tidak Ada', data: [] })
                 res.status(200).json({ error: false, message: 'GET Products Berhasil', data: result })
             }
         } catch (error) {
@@ -45,7 +45,7 @@ class ProductController {
         try {
             const userID = req.userID
             const result = await ProductService.getMyProducts(userID)
-            if (result === 404) return res.status(404).json({ error: true, message: 'Products Tidak Ada', data: [] })
+            if (result === 404) return res.status(200).json({ error: false, message: 'Products Tidak Ada', data: [] })
             res.status(200).json({ error: false, message: 'GET Products Saya Berhasil', data: result })
         } catch (error) {
             next(error)

@@ -5,7 +5,7 @@ class NotificationController {
         try {
             const userID = req.userID
             const result = await NotificationService.getNotificationsUser(userID)
-            if (result === 404) return res.status(404).json({ error: true, message: 'Notifications Tidak Ada', data: [] })
+            if (result === 404) return res.status(200).json({ error: false, message: 'Notifications Tidak Ada', data: [] })
             return res.status(200).json({ error: false, message: 'GET Notifications User Berhasil', data: result })
         } catch (error) {
             next(error)
@@ -16,7 +16,7 @@ class NotificationController {
         try {
             const userID = req.userID
             const result = await NotificationService.getNotificationsResto(userID)
-            if (result === 404) return res.status(404).json({ error: true, message: 'Notifications Tidak Ada', data: [] })
+            if (result === 404) return res.status(200).json({ error: false, message: 'Notifications Tidak Ada', data: [] })
             return res.status(200).json({ error: false, message: 'GET Notifications User Berhasil', data: result })
         } catch (error) {
             next(error)

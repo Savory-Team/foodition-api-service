@@ -7,7 +7,7 @@ class FavoriteController {
         try {
             const userID = req.userID
             const result = await FavoriteService.getMyFavorites(userID)
-            if (result === 404) return res.status(404).json({ error: true, message: 'Favorite Tidak Ada', data: [] })
+            if (result === 404) return res.status(200).json({ error: false, message: 'Favorite Tidak Ada', data: [] })
             res.status(200).json({ error: false, message: 'GET Favorite Saya Berhasil', data: result })
         } catch (error) {
             next(error)
