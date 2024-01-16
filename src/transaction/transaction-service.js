@@ -63,6 +63,32 @@ class TransactionService {
         }
     }
 
+    static getHistorysUser = async(userID) => {
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        const searchTransaction = await Transaction.findAll({
+            where: { user_id: searchUser.dataValues.user_id },
+            include: { model: Product, required: true, include: { model: Resto, required: true } }
+        })
+        if (searchTransaction.length === 0) return 404
+        const { nama: namaRestoran, kecamatan, kelurahan, alamat_lengkap: alamatLengkap } = searchTransaction.dataValues.product.dataValues.restoran.dataValues
+        const TransactionHistory = searchTransaction.map(transaction => {
+            return {
+                transactionID: transaction.dataValues.transaction_id,
+                namaRestoran,
+                image: transaction.dataValues.product.dataValues.image,
+                price: transaction.price,
+                tanggal: moment(transaction.dataValues.createdAt).format("DD MMMM YYYY"),
+                status: transaction.dataValues.status,
+                alamatRestoran: `${alamatLengkap}, ${kelurahan}, ${kecamatan}`,
+                ulas: transaction.dataValues.rating === 0 ? true : false
+            }
+        })
+        return TransactionHistory
+    }
+
     static getHistoryResto = async(userID) => {
         const searchUser = await User.findOne({ where: { user_id: userID } })
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
@@ -141,8 +167,11 @@ class TransactionService {
             kelurahan,
             alamat_lengkap: alamatLengkap
         } = searchUser.dataValues
-        const validateDataUser = user_id && username && no_hp && provinsi && kotaKab && kecamatan && kelurahan && alamatLengkap
-        if (!validateDataUser) throw new ResponseError(400, 'Data User Tidak Lengkap')
+        const missingVariables = [!user_id && 'User ID', !username && 'Username', !no_hp && 'Nomor Handphone', !provinsi && 'Provinsi', !kotaKab && 'Kota/Kabupaten', !kecamatan && 'Kecamatan', !kelurahan && 'Kelurahan', !alamatLengkap && 'Alamat Lengkap', ].filter(Boolean);
+        if (missingVariables.length > 0) {
+            const missingVariablesList = missingVariables.join(', ');
+            throw new ResponseError(400, `Data User Tidak Lengkap. Data yang tidak ada: ${missingVariablesList}`);
+        }
         const { productID, price, type } = request
         const searchProduct = await Product.findOne({
             where: {

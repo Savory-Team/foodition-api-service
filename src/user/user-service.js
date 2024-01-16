@@ -43,6 +43,24 @@ class UserService {
         }
     }
 
+    static getMyProfileAndDetails = async(userID) => {
+        const searchMyProfile = await User.findOne({ where: { user_id: userID } })
+        if (!searchMyProfile) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchMyProfile.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        return {
+            userID: searchMyProfile.dataValues.user_id ? searchMyProfile.dataValues.user_id : null,
+            nama: searchMyProfile.dataValues.nama ? searchMyProfile.dataValues.nama : null,
+            email: searchMyProfile.dataValues.email ? searchMyProfile.dataValues.email : null,
+            image: searchMyProfile.dataValues.image ? searchMyProfile.dataValues.image : null,
+            username: searchMyProfile.dataValues.username ? searchMyProfile.dataValues.username : null,
+            bio: searchMyProfile.dataValues.bio ? searchMyProfile.dataValues.bio : null,
+            noHp: searchMyProfile.dataValues.no_hp ? searchMyProfile.dataValues.no_hp : null,
+            jenisKelamin: searchMyProfile.dataValues.jenis_kelamin ? searchMyProfile.dataValues.jenis_kelamin ? 'Laki-laki' : 'Perempuan' : null,
+            tanggalLahir: searchMyProfile.dataValues.tgl_lahir ? searchMyProfile.dataValues.tgl_lahir : null,
+        }
+    }
+
     static getMyAlamat = async(userID) => {
         const searchUser = await User.findOne({ where: { user_id: userID } })
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')

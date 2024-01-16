@@ -7,6 +7,8 @@ const TransactionRouting = express.Router()
 
 TransactionRouting.get('/history/user', Authentication, TransactionController.getHistoryUser, errorMiddleware)
 TransactionRouting.get('/history/user/:id', Authentication, TransactionController.getHistoryUserDetail, errorMiddleware)
+TransactionRouting.get('/history/user/me', Authentication, TransactionController.getHistoryUserDetail, errorMiddleware)
+
 TransactionRouting.get('/history/resto', Authentication, TransactionController.getHistoryResto, errorMiddleware)
 TransactionRouting.get('/history/resto/:id', Authentication, TransactionController.getHistoryRestoDetail, errorMiddleware)
 TransactionRouting.post('/buy', Authentication, TransactionController.buyProduct, errorMiddleware)

@@ -8,6 +8,7 @@ const UserRouting = express.Router()
 
 UserRouting.get('/user/me', Authentication, UserController.getMyProfile, errorMiddleware)
 UserRouting.get('/user/me/detail', Authentication, UserController.getMyDetailProfile, errorMiddleware)
+UserRouting.get('/user/my', Authentication, UserController.getMyProfileAndDetails, errorMiddleware)
 
 UserRouting.get('/user/me/alamat', Authentication, UserController.getMyAlamat, errorMiddleware)
 UserRouting.get('/user/me/nama', Authentication, UserController.getMyNama, errorMiddleware)

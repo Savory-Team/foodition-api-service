@@ -24,6 +24,16 @@ class UserController {
         }
     }
 
+    static getMyProfileAndDetails = async(req, res, next) => {
+        try {
+            const userID = req.userID
+            const result = await UserService.getMyProfileAndDetails(userID)
+            return res.status(200).json({ error: false, message: 'GET Profile Saya Berhasil', data: result })
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static getMyAlamat = async(req, res, next) => {
         try {
             const userID = req.userID

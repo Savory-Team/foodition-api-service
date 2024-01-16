@@ -29,6 +29,18 @@ class TransactionController {
         }
     }
 
+    static getHistorysUser = async(req, res, next) => {
+        try {
+            const userID = req.userID
+            const validUserID = validate(TransactionValidation.UserIDValidation, userID)
+            const result = await TransactionService.getHistorysUser(validUserID)
+            if (result === 404) return res.status(200).json({ error: false, message: 'History Pembelian Tidak Ada', data: [] })
+            res.status(200).json({ error: false, Message: 'GET History Pembelian Berhasil', data: result })
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static getHistoryResto = async(req, res, next) => {
         try {
             const userID = req.userID

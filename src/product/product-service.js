@@ -355,8 +355,11 @@ class ProductService {
             kelurahan,
             alamat_lengkap: alamatLengkap
         } = searchResto.dataValues
-        const validateDataResto = userID && slogan && deskripsi && provinsi && kotaKab && kecamatan && kelurahan && alamatLengkap
-        if (!validateDataResto) throw new ResponseError(400, 'Data Restoran Tidak Lengkap')
+        const missingVariables = [!userID && 'userID', !slogan && 'slogan', !deskripsi && 'deskripsi', !provinsi && 'provinsi', !kotaKab && 'kotaKab', !kecamatan && 'kecamatan', !kelurahan && 'kelurahan', !alamatLengkap && 'alamatLengkap', ].filter(Boolean);
+        if (missingVariables.length > 0) {
+            const missingVariablesList = missingVariables.join(', ');
+            throw new ResponseError(400, `Data Restoran Tidak Lengkap. Variabel yang tidak ada: ${missingVariablesList}`);
+        }
         const { type, status: makananLayak } = request
         const searchProductBerbayar = await Product.count({ where: { resto_id: restoID, active: true, type: true } })
         const searchProductGratis = await Product.count({ where: { resto_id: restoID, active: true, type: false } })
