@@ -72,6 +72,7 @@ class TransactionService {
             where: { user_id: searchUser.dataValues.user_id },
             include: { model: Product, required: true, include: { model: Resto, required: true } }
         })
+        console.log('getHistorysUser')
         if (searchTransaction.length === 0) return 404
         const { nama: namaRestoran, kecamatan, kelurahan, alamat_lengkap: alamatLengkap } = searchTransaction.dataValues.product.dataValues.restoran.dataValues
         const TransactionHistory = searchTransaction.map(transaction => {
