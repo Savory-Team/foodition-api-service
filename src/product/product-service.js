@@ -35,7 +35,7 @@ class ProductService {
                 required: false
             }]
         })
-        if (searchProducts.length === 0) throw new ResponseError(404, 'Products Tidak Ada')
+        if (searchProducts.length === 0) return 404
         const productsAfterUpdateKategori = searchProducts.map(product => {
             const lokasiRestoran = product.dataValues.restoran.dataValues.kecamatan && product.dataValues.restoran.dataValues.kota_kab ?
                 `${product.dataValues.restoran.dataValues.kecamatan}, ${product.dataValues.restoran.dataValues.kota_kab}` :
@@ -114,7 +114,7 @@ class ProductService {
                 required: false
             }]
         })
-        if (searchProducts.length === 0) throw new ResponseError(404, 'Products Tidak Ada')
+        if (searchProducts.length === 0) return 404
         const productsAfterUpdateKategori = searchProducts.map(product => {
             const lokasiRestoran = product.dataValues.restoran.dataValues.kecamatan && product.dataValues.restoran.dataValues.kota_kab ?
                 `${product.dataValues.restoran.dataValues.kecamatan}, ${product.dataValues.restoran.dataValues.kota_kab}` :
@@ -202,7 +202,7 @@ class ProductService {
                 ]
             }
         })
-
+        if (searchResto.length === 0) return 404
         const restoProducts = searchResto.map(resto => {
             const products = resto.products.map(product => {
                 const transactions = product.dataValues.transactions
@@ -266,7 +266,7 @@ class ProductService {
         if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
         const restoranID = searchResto.dataValues.resto_id
         const searchProducts = await Product.findAll({ where: { resto_id: restoranID } })
-        if (searchProducts.length === 0) throw new ResponseError(404, 'Produk Tidak Ada')
+        if (searchProducts.length === 0) return 404
         const myProducts = searchProducts.map(product => {
             const kagetoriProduct = product.dataValues.kategori
             const resultKategori = kagetoriProduct.replace(/,\s+/g, ',');

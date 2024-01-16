@@ -18,7 +18,7 @@ class TransactionService {
             where: { user_id: searchUser.dataValues.user_id },
             include: { model: Product, required: true, include: { model: Resto, required: true } }
         })
-        if (searchTransaction.length === 0) throw new ResponseError(404, 'History Pembelian Tidak Ada')
+        if (searchTransaction.length === 0) return 404
         const TransactionHistory = searchTransaction.map(transaction => {
             return {
                 transactionID: transaction.dataValues.transaction_id,
@@ -81,7 +81,7 @@ class TransactionService {
                 }
             }
         })
-        if (searchTransaction.length === 0) throw new ResponseError(404, 'History Penjualan Tidak Ada')
+        if (searchTransaction.length === 0) return 404
         const TransactionHistory = searchTransaction.map(transaction => {
             return {
                 transactionID: transaction.dataValues.transaction_id,

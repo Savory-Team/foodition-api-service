@@ -15,7 +15,7 @@ class FavoriteService {
             where: { user_id: userID },
             include: { model: Product, required: false, where: { active: true }, include: Resto }
         })
-        if (searchMyFavorites.length === 0) throw new ResponseError(400, 'Favorite Tidak Ada')
+        if (searchMyFavorites.length === 0) return 404
         const myFavorites = searchMyFavorites.map(favorite => {
             const { alamat_lengkap, kota_kab, provinsi } = favorite.dataValues.product.dataValues.restoran.dataValues
             return {

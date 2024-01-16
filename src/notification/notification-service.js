@@ -15,7 +15,7 @@ class NotificationService {
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'User Belum Aktif')
         const getNotificationUserUsingUserID = await NotificationUser.findAll({ where: { user_id: searchUser.dataValues.user_id } })
-        if (getNotificationUserUsingUserID.length === 0) throw new ResponseError(404, 'Notifikasi Tidak Ada')
+        if (getNotificationUserUsingUserID.length === 0) return 404
         return getNotificationUserUsingUserID
     }
 
@@ -28,7 +28,7 @@ class NotificationService {
         const searchResto = await Resto.findOne({ where: { user_id: searchUser.dataValues.user_id } })
         if (!searchResto) throw new ResponseError(404, 'Restoran Tidak Ada')
         const getNotificationRestoUsingRestoID = await NotificationResto.findAll({ where: { resto_id: searchResto.dataValues.resto_id } })
-        if (getNotificationRestoUsingRestoID.length === 0) throw new ResponseError(404, 'Notifikasi Tidak Ada')
+        if (getNotificationRestoUsingRestoID.length === 0) return 404
         return getNotificationRestoUsingRestoID
     }
 
