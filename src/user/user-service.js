@@ -58,6 +58,13 @@ class UserService {
             noHp: searchMyProfile.dataValues.no_hp ? searchMyProfile.dataValues.no_hp : null,
             jenisKelamin: searchMyProfile.dataValues.jenis_kelamin ? searchMyProfile.dataValues.jenis_kelamin ? 'Laki-laki' : 'Perempuan' : null,
             tanggalLahir: searchMyProfile.dataValues.tgl_lahir ? searchMyProfile.dataValues.tgl_lahir : null,
+            labelAlamat: searchMyProfile.dataValues.labelAlamat ? searchMyProfile.dataValues.labelAlamat : null,
+            negara: searchMyProfile.dataValues.negara ? searchMyProfile.dataValues.negara : null,
+            provinsi: searchMyProfile.dataValues.provinsi ? searchMyProfile.dataValues.provinsi : null,
+            kotaKab: searchMyProfile.dataValues.kota_kab ? searchMyProfile.dataValues.kota_kab : null,
+            kecamatan: searchMyProfile.dataValues.kecamatan ? searchMyProfile.dataValues.kecamatan : null,
+            kelurahan: searchMyProfile.dataValues.kelurahan ? searchMyProfile.dataValues.kelurahan : null,
+            alamatLengkap: searchMyProfile.dataValues.alamat_lengkap ? searchMyProfile.dataValues.alamat_lengkap : null,
         }
     }
 
