@@ -162,11 +162,13 @@ class RestoService {
         }
         const pushNotification = await NotificationService.postNotificationResto(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        const searchRestoAgain = await Resto.findOne({ where: { user_id: userID } })
+        if (!searchRestoAgain) throw new ResponseError(400, 'Restoran Tidak Ada')
         const searchTransaction = await Transaction.findAll({
             include: {
                 model: Product,
                 required: true,
-                where: { resto_id: searchResto.dataValues.resto_id }
+                where: { resto_id: searchRestoAgain.dataValues.resto_id }
             }
         })
         let rating = '0'
@@ -176,30 +178,30 @@ class RestoService {
             rating = parseFloat(newRating).toFixed(2)
         }
         return {
-            restoID: newRestoran.resto_id ? newRestoran.resto_id : null,
-            userID: newRestoran.user_id ? newRestoran.user_id : null,
+            restoID: searchRestoAgain.dataValues.resto_id ? searchRestoAgain.dataValues.resto_id : null,
+            userID: searchRestoAgain.dataValues.user_id ? searchRestoAgain.dataValues.user_id : null,
             image: defaultPhoto ? defaultPhoto : null,
-            nama: newRestoran.nama ? newRestoran.nama : null,
-            noHp: newRestoran.no_hp ? `62${searchResto.dataValues.no_hp}` : null,
+            nama: searchRestoAgain.dataValues.nama ? searchRestoAgain.dataValues.nama : null,
+            noHp: searchRestoAgain.dataValues.no_hp ? `62${searchResto.dataValues.no_hp}` : null,
             slogan: null,
             totalProduct: 0,
             rating,
-            restoID: searchResto._previousDataValues.resto_id ? searchResto._previousDataValues.resto_id : null,
-            userID: searchResto._previousDataValues.user_id ? searchResto._previousDataValues.user_id : null,
-            nama: searchResto._previousDataValues.nama ? searchResto._previousDataValues.nama : null,
-            noHp: searchResto._previousDataValues.no_hp ? searchResto._previousDataValues.no_hp : null,
-            image: searchResto._previousDataValues.image ? searchResto._previousDataValues.image : null,
-            username: searchResto._previousDataValues.username ? searchResto._previousDataValues.username : null,
-            slogan: searchResto._previousDataValues.slogan ? searchResto._previousDataValues.slogan : null,
-            deskripsi: searchResto._previousDataValues.deskripsi ? searchResto._previousDataValues.deskripsi : null,
+            restoID: searchRestoAgain.dataValues.resto_id ? searchRestoAgain.dataValues.resto_id : null,
+            userID: searchRestoAgain.dataValues.user_id ? searchRestoAgain.dataValues.user_id : null,
+            nama: searchRestoAgain.dataValues.nama ? searchRestoAgain.dataValues.nama : null,
+            noHp: searchRestoAgain.dataValues.no_hp ? searchRestoAgain.dataValues.no_hp : null,
+            image: searchRestoAgain.dataValues.image ? searchRestoAgain.dataValues.image : null,
+            username: searchRestoAgain.dataValues.username ? searchRestoAgain.dataValues.username : null,
+            slogan: searchRestoAgain.dataValues.slogan ? searchRestoAgain.dataValues.slogan : null,
+            deskripsi: searchRestoAgain.dataValues.deskripsi ? searchRestoAgain.dataValues.deskripsi : null,
             totalProduct: countProductsResto ? countProductsResto : 0,
-            labelAlamat: searchResto._previousDataValues.label_alamat ? searchResto._previousDataValues.label_alamat : null,
-            negara: searchResto._previousDataValues.negara ? searchResto._previousDataValues.negara : null,
-            provinsi: searchResto._previousDataValues.provinsi ? searchResto._previousDataValues.provinsi : null,
-            kotaKab: searchResto._previousDataValues.kota_kab ? searchResto._previousDataValues.kota_kab : null,
-            kecamatan: searchResto._previousDataValues.kecamatan ? searchResto._previousDataValues.kecamatan : null,
-            kelurahan: searchResto._previousDataValues.kelurahan ? searchResto._previousDataValues.kelurahan : null,
-            alamatLengkap: searchResto._previousDataValues.alamat_lengkap ? searchResto._previousDataValues.alamat_lengkap : null,
+            labelAlamat: searchRestoAgain.dataValues.label_alamat ? searchRestoAgain.dataValues.label_alamat : null,
+            negara: searchRestoAgain.dataValues.negara ? searchRestoAgain.dataValues.negara : null,
+            provinsi: searchRestoAgain.dataValues.provinsi ? searchRestoAgain.dataValues.provinsi : null,
+            kotaKab: searchRestoAgain.dataValues.kota_kab ? searchRestoAgain.dataValues.kota_kab : null,
+            kecamatan: searchRestoAgain.dataValues.kecamatan ? searchRestoAgain.dataValues.kecamatan : null,
+            kelurahan: searchRestoAgain.dataValues.kelurahan ? searchRestoAgain.dataValues.kelurahan : null,
+            alamatLengkap: searchRestoAgain.dataValues.alamat_lengkap ? searchRestoAgain.dataValues.alamat_lengkap : null,
         }
     }
 
