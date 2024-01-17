@@ -163,7 +163,6 @@ class RestoService {
         const pushNotification = await NotificationService.postNotificationResto(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         const searchRestoAgain = await Resto.findOne({ where: { user_id: userID } })
-        console.log({ searchRestoAgain })
         if (!searchRestoAgain) throw new ResponseError(400, 'Restoran Tidak Ada')
         const searchTransaction = await Transaction.findAll({
             include: {
@@ -172,7 +171,6 @@ class RestoService {
                 where: { resto_id: searchRestoAgain.dataValues.resto_id }
             }
         })
-        console.log({ searchTransaction })
         let rating = '0'
         if (searchTransaction.length > 0) {
             const restoRating = searchTransaction.map(transaction => transaction.dataValues.rating)
