@@ -267,6 +267,21 @@ class ProductService {
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         const searchResto = await Resto.findOne({ where: { user_id: userID } })
         if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
+        const {
+            resto_id,
+            slogan,
+            deskripsi,
+            provinsi,
+            kota_kab: kotaKab,
+            kecamatan,
+            kelurahan,
+            alamat_lengkap: alamatLengkap
+        } = searchResto.dataValues
+        const missingVariables = [!userID && 'userID', !resto_id && 'restoID', !slogan && 'slogan', !deskripsi && 'deskripsi', !provinsi && 'provinsi', !kotaKab && 'kotaKab', !kecamatan && 'kecamatan', !kelurahan && 'kelurahan', !alamatLengkap && 'alamatLengkap', ].filter(Boolean);
+        if (missingVariables.length > 0) {
+            const missingVariablesList = missingVariables.join(', ');
+            throw new ResponseError(400, `Data Restoran Tidak Lengkap. Lengkapi data berikut: ${missingVariablesList}`);
+        }
         const searchProducts = await Product.findAll({
             include: [{
                 model: Resto,
