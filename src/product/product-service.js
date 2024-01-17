@@ -46,7 +46,7 @@ class ProductService {
             const transactions = product.dataValues.transactions
             let rating = '0'
             if (transactions.length > 0) {
-                const restoRating = searchTransaction.map(transaction => transaction.dataValues.rating)
+                const restoRating = transactions.map(transaction => transaction.dataValues.rating)
                 const newRating = (restoRating.reduce((a, b) => a + b, 0) / restoRating.length)
                 rating = parseFloat(newRating).toFixed(2)
             }
