@@ -58,7 +58,7 @@ class UserService {
             noHp: searchMyProfile.dataValues.no_hp ? searchMyProfile.dataValues.no_hp : null,
             jenisKelamin: searchMyProfile.dataValues.jenis_kelamin ? searchMyProfile.dataValues.jenis_kelamin ? 'Laki-laki' : 'Perempuan' : null,
             tanggalLahir: searchMyProfile.dataValues.tgl_lahir ? searchMyProfile.dataValues.tgl_lahir : null,
-            labelAlamat: searchMyProfile.dataValues.labelAlamat ? searchMyProfile.dataValues.labelAlamat : null,
+            labelAlamat: searchMyProfile.dataValues.label_alamat ? searchMyProfile.dataValues.label_alamat : null,
             negara: searchMyProfile.dataValues.negara ? searchMyProfile.dataValues.negara : null,
             provinsi: searchMyProfile.dataValues.provinsi ? searchMyProfile.dataValues.provinsi : null,
             kotaKab: searchMyProfile.dataValues.kota_kab ? searchMyProfile.dataValues.kota_kab : null,
