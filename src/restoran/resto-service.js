@@ -99,6 +99,82 @@ class RestoService {
         }
     }
 
+    static getRestoMe = async(userID) => {
+        const searchUser = await User.findOne({ where: { user_id: userID } })
+        if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')
+        const isActive = searchUser.dataValues.active
+        if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
+        const checkNomorHp = searchUser.dataValues.no_hp
+        if (!checkNomorHp) throw new ResponseError(400, 'Biodatamu Belum Lengkap')
+        const searchResto = await Resto.findOne({ where: { user_id: userID } })
+        if (searchResto) {
+            const countProductsResto = await Product.count({ where: { resto_id: searchResto.dataValues.resto_id } })
+            return {
+                restoID: searchResto.dataValues.resto_id ? searchResto.dataValues.resto_id : null,
+                userID: searchResto.dataValues.user_id ? searchResto.dataValues.user_id : null,
+                image: searchResto.dataValues.image ? searchResto.dataValues.image : null,
+                nama: searchResto.dataValues.nama ? searchResto.dataValues.nama : null,
+                noHp: searchResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
+                slogan: searchResto.dataValues.slogan ? searchResto.dataValues.slogan : null,
+                totalProduct: countProductsResto ? countProductsResto : 0,
+                username: searchResto.dataValues.username ? searchResto.dataValues.username : null,
+                noHp: searchResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
+                deskripsi: searchResto.dataValues.deskripsi ? searchResto.dataValues.deskripsi : null,
+                labelAlamat: searchResto.dataValues.label_alamat ? searchResto.dataValues.label_alamat : null,
+                negara: searchResto.dataValues.negara ? searchResto.dataValues.negara : null,
+                provinsi: searchResto.dataValues.provinsi ? searchResto.dataValues.provinsi : null,
+                kotaKab: searchResto.dataValues.kota_kab ? searchResto.dataValues.kota_kab : null,
+                kecamatan: searchResto.dataValues.kecamatan ? searchResto.dataValues.kecamatan : null,
+                kelurahan: searchResto.dataValues.kelurahan ? searchResto.dataValues.kelurahan : null,
+                alamatLengkap: searchResto.dataValues.alamat_lengkap ? searchResto.dataValues.alamat_lengkap : null,
+            }
+        }
+        const defaultPhoto = 'https://storage.googleapis.com/savory/api-service/user/default-user-image.png'
+        const newRestoran = {
+            resto_id: uuidv4().toString(),
+            user_id: userID,
+            nama: `Restoran ${searchUser.dataValues.nama}`,
+            no_hp: searchUser.dataValues.no_hp,
+            image: defaultPhoto,
+        }
+        const createResto = await Resto.create(newRestoran)
+        if (!createResto) throw new ResponseError(400, 'Restoran Gagal Dibuat')
+        const dataNotification = {
+            user_id: userID,
+            type: '0',
+            title: 'Restoran berhasil dibuat',
+            message: 'Selamat, restoran anda berhasil dibuat. Sekarang anda bisa menjual makanan.',
+        }
+        const pushNotification = await NotificationService.postNotificationResto(dataNotification)
+        if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        return {
+            restoID: newRestoran.resto_id ? newRestoran.resto_id : null,
+            userID: newRestoran.user_id ? newRestoran.user_id : null,
+            image: defaultPhoto ? defaultPhoto : null,
+            nama: newRestoran.nama ? newRestoran.nama : null,
+            noHp: newRestoran.no_hp ? newRestoran.no_hp : null,
+            slogan: null,
+            totalProduct: 0,
+
+            restoID: searchResto._previousDataValues.resto_id ? searchResto._previousDataValues.resto_id : null,
+            userID: searchResto._previousDataValues.user_id ? searchResto._previousDataValues.user_id : null,
+            nama: searchResto._previousDataValues.nama ? searchResto._previousDataValues.nama : null,
+            noHp: searchResto._previousDataValues.no_hp ? searchResto._previousDataValues.no_hp : null,
+            image: searchResto._previousDataValues.image ? searchResto._previousDataValues.image : null,
+            username: searchResto._previousDataValues.username ? searchResto._previousDataValues.username : null,
+            slogan: searchResto._previousDataValues.slogan ? searchResto._previousDataValues.slogan : null,
+            deskripsi: searchResto._previousDataValues.deskripsi ? searchResto._previousDataValues.deskripsi : null,
+            totalProduct: countProductsResto ? countProductsResto : 0,
+            labelAlamat: searchResto._previousDataValues.label_alamat ? searchResto._previousDataValues.label_alamat : null,
+            negara: searchResto._previousDataValues.negara ? searchResto._previousDataValues.negara : null,
+            provinsi: searchResto._previousDataValues.provinsi ? searchResto._previousDataValues.provinsi : null,
+            kotaKab: searchResto._previousDataValues.kota_kab ? searchResto._previousDataValues.kota_kab : null,
+            kecamatan: searchResto._previousDataValues.kecamatan ? searchResto._previousDataValues.kecamatan : null,
+            kelurahan: searchResto._previousDataValues.kelurahan ? searchResto._previousDataValues.kelurahan : null,
+            alamatLengkap: searchResto._previousDataValues.alamat_lengkap ? searchResto._previousDataValues.alamat_lengkap : null,
+        }
+    }
+
     static updatePhoto = async(userID, filePath) => {
         const searchUser = await User.findOne({ where: { user_id: userID } })
         if (!searchUser) throw new ResponseError(400, 'Akun Tidak Ada')

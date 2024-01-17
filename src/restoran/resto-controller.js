@@ -35,6 +35,16 @@ class RestoController {
         }
     }
 
+    static getRestoMe = async(req, res, next) => {
+        try {
+            const userID = req.userID
+            const result = await RestoService.getRestoMe(userID)
+            res.status(200).json({ error: false, message: 'GET Restoran Berhasil', data: result })
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static updatePhoto = async(req, res, next) => {
         try {
             const userID = req.userID
