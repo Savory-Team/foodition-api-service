@@ -163,6 +163,7 @@ class RestoService {
         const pushNotification = await NotificationService.postNotificationResto(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
         const searchRestoAgain = await Resto.findOne({ where: { user_id: userID } })
+        console.log({ searchRestoAgain })
         if (!searchRestoAgain) throw new ResponseError(400, 'Restoran Tidak Ada')
         const searchTransaction = await Transaction.findAll({
             include: {
@@ -171,6 +172,7 @@ class RestoService {
                 where: { resto_id: searchRestoAgain.dataValues.resto_id }
             }
         })
+        console.log({ searchTransaction })
         let rating = '0'
         if (searchTransaction.length > 0) {
             const restoRating = searchTransaction.map(transaction => transaction.dataValues.rating)
@@ -180,10 +182,10 @@ class RestoService {
         return {
             restoID: searchRestoAgain.dataValues.resto_id ? searchRestoAgain.dataValues.resto_id : null,
             userID: searchRestoAgain.dataValues.user_id ? searchRestoAgain.dataValues.user_id : null,
-            image: defaultPhoto ? defaultPhoto : null,
+            image: searchRestoAgain.dataValues.image ? searchRestoAgain.dataValues.image : null,
             nama: searchRestoAgain.dataValues.nama ? searchRestoAgain.dataValues.nama : null,
-            noHp: searchRestoAgain.dataValues.no_hp ? `62${searchResto.dataValues.no_hp}` : null,
-            slogan: null,
+            noHp: searchRestoAgain.dataValues.no_hp ? `62${searchRestoAgain.dataValues.no_hp}` : null,
+            slogan: searchRestoAgain.dataValues.nama ? searchRestoAgain.dataValues.nama : null,
             totalProduct: 0,
             rating,
             restoID: searchRestoAgain.dataValues.resto_id ? searchRestoAgain.dataValues.resto_id : null,
@@ -194,7 +196,6 @@ class RestoService {
             username: searchRestoAgain.dataValues.username ? searchRestoAgain.dataValues.username : null,
             slogan: searchRestoAgain.dataValues.slogan ? searchRestoAgain.dataValues.slogan : null,
             deskripsi: searchRestoAgain.dataValues.deskripsi ? searchRestoAgain.dataValues.deskripsi : null,
-            totalProduct: countProductsResto ? countProductsResto : 0,
             labelAlamat: searchRestoAgain.dataValues.label_alamat ? searchRestoAgain.dataValues.label_alamat : null,
             negara: searchRestoAgain.dataValues.negara ? searchRestoAgain.dataValues.negara : null,
             provinsi: searchRestoAgain.dataValues.provinsi ? searchRestoAgain.dataValues.provinsi : null,
