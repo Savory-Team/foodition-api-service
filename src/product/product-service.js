@@ -296,9 +296,9 @@ class ProductService {
             return {
                 productID: product.dataValues.product_id ? product.dataValues.product_id : null,
                 image: product.dataValues.image ? product.dataValues.image : null,
-                active: product.dataValues.active ? product.dataValues.active : null,
-                status: product.dataValues.status ? product.dataValues.status : null,
-                type: product.dataValues.type ? product.dataValues.type : null,
+                active: product.dataValues.active,
+                status: product.dataValues.status,
+                type: product.dataValues.type,
                 porsi: product.dataValues.porsi ? product.dataValues.porsi : null,
                 harga: product.dataValues.type ? 10000 : 0,
                 kategori: listKategori ? listKategori : null,
