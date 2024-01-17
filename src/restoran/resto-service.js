@@ -7,6 +7,7 @@ const User = require('../user/user-model.js')
 const Resto = require('./resto-model.js')
 const Product = require('../product/product-model.js')
 const NotificationService = require('../notification/notification-service.js')
+const Transaction = require('../transaction/transaction-model.js')
 const operator = require('indonesia-number-provider-checker').operator
 
 
@@ -105,10 +106,23 @@ class RestoService {
         const isActive = searchUser.dataValues.active
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         const checkNomorHp = searchUser.dataValues.no_hp
-        if (!checkNomorHp) throw new ResponseError(400, 'Biodatamu Belum Lengkap')
+        if (!checkNomorHp) throw new ResponseError(400, 'Biodatamu Belum Lengkap, silahkan masukkan nomor handphonemu!')
         const searchResto = await Resto.findOne({ where: { user_id: userID } })
         if (searchResto) {
             const countProductsResto = await Product.count({ where: { resto_id: searchResto.dataValues.resto_id } })
+            const searchTransaction = await Transaction.findAll({
+                include: {
+                    model: Product,
+                    required: true,
+                    where: { resto_id: searchResto.dataValues.resto_id }
+                }
+            })
+            let rating = '0'
+            if (searchTransaction.length > 0) {
+                const restoRating = searchTransaction.map(transaction => transaction.dataValues.rating)
+                const newRating = (restoRating.reduce((a, b) => a + b, 0) / restoRating.length)
+                rating = parseFloat(newRating).toFixed(2)
+            }
             return {
                 restoID: searchResto.dataValues.resto_id ? searchResto.dataValues.resto_id : null,
                 userID: searchResto.dataValues.user_id ? searchResto.dataValues.user_id : null,
@@ -117,6 +131,7 @@ class RestoService {
                 noHp: searchResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
                 slogan: searchResto.dataValues.slogan ? searchResto.dataValues.slogan : null,
                 totalProduct: countProductsResto ? countProductsResto : 0,
+                rating,
                 username: searchResto.dataValues.username ? searchResto.dataValues.username : null,
                 noHp: searchResto.dataValues.no_hp ? searchResto.dataValues.no_hp : null,
                 deskripsi: searchResto.dataValues.deskripsi ? searchResto.dataValues.deskripsi : null,
@@ -147,6 +162,19 @@ class RestoService {
         }
         const pushNotification = await NotificationService.postNotificationResto(dataNotification)
         if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
+        const searchTransaction = await Transaction.findAll({
+            include: {
+                model: Product,
+                required: true,
+                where: { resto_id: searchResto.dataValues.resto_id }
+            }
+        })
+        let rating = '0'
+        if (searchTransaction.length > 0) {
+            const restoRating = searchTransaction.map(transaction => transaction.dataValues.rating)
+            const newRating = (restoRating.reduce((a, b) => a + b, 0) / restoRating.length).toString()
+            rating = parseFloat(newRating).toFixed(2)
+        }
         return {
             restoID: newRestoran.resto_id ? newRestoran.resto_id : null,
             userID: newRestoran.user_id ? newRestoran.user_id : null,
@@ -155,7 +183,7 @@ class RestoService {
             noHp: newRestoran.no_hp ? newRestoran.no_hp : null,
             slogan: null,
             totalProduct: 0,
-
+            rating,
             restoID: searchResto._previousDataValues.resto_id ? searchResto._previousDataValues.resto_id : null,
             userID: searchResto._previousDataValues.user_id ? searchResto._previousDataValues.user_id : null,
             nama: searchResto._previousDataValues.nama ? searchResto._previousDataValues.nama : null,

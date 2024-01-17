@@ -44,9 +44,12 @@ class ProductService {
             const resultKategori = kagetoriProduct.replace(/,\s+/g, ',');
             const listKategori = resultKategori.split(',')
             const transactions = product.dataValues.transactions
-            let rating = 0
-            transactions.forEach(transaction => rating += transaction.dataValues.rating)
-            if (rating > 0) rating = rating / parseInt(transactions.length)
+            let rating = '0'
+            if (transactions.length > 0) {
+                const restoRating = searchTransaction.map(transaction => transaction.dataValues.rating)
+                const newRating = (restoRating.reduce((a, b) => a + b, 0) / restoRating.length)
+                rating = parseFloat(newRating).toFixed(2)
+            }
             return {
                 product_id: product.dataValues.product_id,
                 image: product.dataValues.image,
@@ -264,25 +267,48 @@ class ProductService {
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         const searchResto = await Resto.findOne({ where: { user_id: userID } })
         if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
-        const restoranID = searchResto.dataValues.resto_id
-        const searchProducts = await Product.findAll({ where: { resto_id: restoranID } })
+        const searchProducts = await Product.findAll({
+            where: { active: true },
+            include: [{
+                model: Resto,
+                required: true,
+                where: { user_id: userID }
+            }, {
+                model: Transaction,
+                required: true
+            }]
+        })
         if (searchProducts.length === 0) return 404
-        const myProducts = searchProducts.map(product => {
+        const productsAfterUpdateKategori = searchProducts.map(product => {
+            const lokasiRestoran = product.dataValues.restoran.dataValues.kecamatan && product.dataValues.restoran.dataValues.kota_kab ?
+                `${product.dataValues.restoran.dataValues.kecamatan}, ${product.dataValues.restoran.dataValues.kota_kab}` :
+                'Kota Tidak Ada'
             const kagetoriProduct = product.dataValues.kategori
             const resultKategori = kagetoriProduct.replace(/,\s+/g, ',');
             const listKategori = resultKategori.split(',')
+            const transactions = product.dataValues.transactions
+            let rating = '0'
+            if (transactions.length > 0) {
+                const restoRating = transactions.map(transaction => transaction.dataValues.rating)
+                const newRating = (restoRating.reduce((a, b) => a + b, 0) / restoRating.length)
+                rating = parseFloat(newRating).toFixed(2)
+            }
             return {
-                productID: product.dataValues.product_id,
-                image: product.dataValues.image,
-                active: product.dataValues.active,
-                status: product.dataValues.status,
-                type: product.dataValues.type,
-                porsi: product.dataValues.porsi,
-                kagetori: listKategori,
-                harga: product.dataValues.type ? 10000 : 0
+                productID: product.dataValues.product_id ? product.dataValues.product_id : null,
+                image: product.dataValues.image ? product.dataValues.image : null,
+                active: product.dataValues.active ? product.dataValues.active : null,
+                status: product.dataValues.status ? product.dataValues.status : null,
+                type: product.dataValues.type ? product.dataValues.type : null,
+                porsi: product.dataValues.porsi ? product.dataValues.porsi : null,
+                harga: product.dataValues.type ? 10000 : 0,
+                kategori: listKategori ? listKategori : null,
+                restoID: product.dataValues.resto_id ? product.dataValues.resto_id : null,
+                namaRestoran: product.dataValues.restoran.dataValues.nama ? product.dataValues.restoran.dataValues.nama : null,
+                lokasi: lokasiRestoran ? lokasiRestoran : null,
+                rating: rating ? rating.toString() : null
             }
         })
-        return myProducts
+        return productsAfterUpdateKategori
     }
 
     static getProduct = async(userID, productID) => {
