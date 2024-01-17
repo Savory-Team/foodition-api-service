@@ -268,7 +268,6 @@ class ProductService {
         const searchResto = await Resto.findOne({ where: { user_id: userID } })
         if (!searchResto) throw new ResponseError(400, 'Restoran Tidak Ada')
         const searchProducts = await Product.findAll({
-            where: { active: true },
             include: [{
                 model: Resto,
                 required: true,
