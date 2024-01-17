@@ -6,6 +6,7 @@ const Product = require('./product-model.js')
 const ProductService = require('./product-service.js')
 const ProductValidation = require('./product-validation.js')
 const NotificationService = require('../notification/notification-service.js')
+const Restoran = require('../restoran/resto-model.js')
 
 class ProductController {
     static getProducts = async(req, res, next) => {
@@ -75,21 +76,27 @@ class ProductController {
             const RESET_KEY = process.env.RESET_KEY || 'ResetKey'
             const matchKey = key === RESET_KEY
             if (!matchKey) throw new ResponseError(400, 'Key Salah')
-            const products = await Product.findAll()
+            const products = await Product.findAll({ where: { active: true } })
+            if (products.length === 0) throw new ResponseError(404, 'Product Tidak Ada')
             for (const product of products) {
                 product.active = false
                 const updateProduct = await product.save()
                 if (!updateProduct) throw new ResponseError(400, 'Status Product Gagal Diubah')
-            }
-            const users = await User.findAll()
-            for (const user of users) {
+                const searchUser = await Restoran.findOne({
+                    where: { resto_id: product.dataValues.resto_id },
+                    include: {
+                        model: User,
+                        required: true
+                    }
+                })
+                if (!searchUser) throw new ResponseError(400, 'User Tidak Ada')
                 const dataNotification = {
-                    user_id: user.dataValues.user_id,
+                    user_id: searchUser.dataValues.user_id,
                     type: '0',
-                    title: 'Update Status Product Anda',
-                    message: 'Product anda sudah dinonaktifkan, silahkan buat product kembali',
+                    title: 'Berhasil mengubah Data Restoran anda!',
+                    message: 'Mengubah data restoran anda berhasil. Silahkan cek data restoran anda.',
                 }
-                const pushNotification = await NotificationService.postNotification(dataNotification)
+                const pushNotification = await NotificationService.postNotificationResto(dataNotification)
                 if (!pushNotification) throw new ResponseError(400, 'Send Notification Gagal')
             }
             res.status(200).json({ error: false, message: 'Ubah Semua Status Product Berhasil' })
