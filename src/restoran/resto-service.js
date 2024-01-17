@@ -238,7 +238,7 @@ class RestoService {
         if (!isActive) throw new ResponseError(400, 'Akun Belum Aktif')
         const searchResto = await Resto.findOne({ where: { user_id: userID } })
         if (!searchUser) throw new ResponseError(400, 'Restoran Tidak Ada')
-        const noHp = request
+        const { noHp } = request
         const providerValid = operator(noHp)
         if (providerValid === 'Unknown') throw new ResponseError(400, 'Nomor Telepone Tidak Valid')
         if (noHp[0] === '0') {
