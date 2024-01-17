@@ -274,7 +274,7 @@ class ProductService {
                 where: { user_id: userID }
             }, {
                 model: Transaction,
-                required: true
+                required: false
             }]
         })
         if (searchProducts.length === 0) return 404
